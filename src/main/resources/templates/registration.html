@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Registration page</title>
+</head>
+<body>
+<h1>Registration page</h1>
+<p th:if="${passwordError}" class="error">User exist</p>
+<p th:if="${usernameError}" class="error">Username error</p>
+<form th:action="@{/registration}" method="post">
+    <label for="login">Login</label>:
+    <input type="text" id="login" name="login" autofocus="autofocus" /> <br />
+    <label for="password">Password</label>:
+    <input type="password" id="password" name="password" /> <br />
+    <label for="passwordConfirm">Password confirm</label>:
+    <input type="password" id="passwordConfirm" name="passwordConfirm" /> <br />
+    <label for="first_name">First name</label>:
+    <input type="text" id="first_name" name="firstName" autofocus="autofocus" /> <br />
+    <label for="last_name">Last name</label>:
+    <input type="text" id="last_name" name="lastName" autofocus="autofocus" /> <br />
+    <label for="patronymic">Patronymic</label>:
+    <input type="text" id="patronymic" name="patronymic" autofocus="autofocus" /> <br />
+    <input type="submit" value="Register" />
+</form>
+</body>
+</html>
