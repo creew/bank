@@ -1,10 +1,12 @@
 package com.example.bank.controller;
 
 import com.example.bank.dto.CardDto;
-import com.example.bank.entity.Customer;
+import com.example.bank.entity.Card;
+import com.example.bank.entity.User;
+import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.IllegalCardIdPassed;
 import com.example.bank.service.CardsService;
-import com.example.bank.service.CustomerService;
+import com.example.bank.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -23,48 +25,50 @@ public class Controller {
 
     private final CardsService cardsService;
 
-    private final CustomerService customerService;
+    private final UserService userService;
 
-    public Controller(CardsService cardsService, CustomerService customerService) {
+    public Controller(CardsService cardsService, UserService userService) {
         this.cardsService = cardsService;
-        this.customerService = customerService;
+        this.userService = userService;
     }
 
-    private Customer getAuthenticated() {
+    private User getAuthenticated() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return (Customer)auth.getPrincipal();
+        return (User)auth.getPrincipal();
     }
 
     @GetMapping("/cards")
     public List<CardDto> getAllCards(@RequestHeader Map<String, String> headers) {
-        logger.info(headers.entrySet().stream().map(entry -> entry.getKey() + " = " + entry.getValue())
-                .collect(Collectors.joining("\n")));
-        Customer customer = getAuthenticated();
-        Customer fromBase = customerService.getCustomerById(customer.getCustomerId());
+        User user = getAuthenticated();
+        User fromBase = userService.getUserById(user.getUserId());
         List<CardDto> tasksList;
         tasksList = cardsService.mapCardsListToDto(fromBase.getCardSet());
         return tasksList;
     }
 
     @PutMapping("/transfer/{cardIdFrom}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void transferToClient(@PathVariable Long cardIdFrom,
+    @ResponseStatus(HttpStatus.OK)
+    public CardDto transferToClient(@PathVariable Long cardIdFrom,
                                  @RequestParam("card_id_to") Long cardIdTo,
                                  @RequestParam("amount") Long amount) {
-        Customer customerFrom = getAuthenticated();
-        customerFrom.getCardSet().stream()
+        if (amount <= 0) {
+            throw new IllegalArgumentsPassed("Amount less than or equal zero");
+        }
+        User userFrom = getAuthenticated();
+        userFrom.getCardSet().stream()
                 .filter(card1 -> card1.getCardId().equals(cardIdFrom))
                 .findAny()
                 .orElseThrow(() -> new IllegalCardIdPassed(cardIdFrom + " is not your card"));
-        cardsService.transferMoney(cardIdFrom, cardIdTo, amount);
+        Card updated = cardsService.transferMoney(cardIdFrom, cardIdTo, amount);
+        return cardsService.mapCardToCardDto(updated);
     }
 
     @PutMapping("/deposit/{cardId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deposit(@PathVariable Long cardId,
                         @RequestParam("amount") Long amount) {
-        Customer customerFrom = getAuthenticated();
-        customerFrom.getCardSet().stream()
+        User userFrom = getAuthenticated();
+        userFrom.getCardSet().stream()
                 .filter(card1 -> card1.getCardId().equals(cardId))
                 .findAny()
                 .orElseThrow(() -> new IllegalCardIdPassed(cardId + " is not your card"));

@@ -8,7 +8,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,29 +24,40 @@ public class CardsService {
         this.cardRepository = cardRepository;
     }
 
+    public CardDto mapCardToCardDto(Card card) {
+        return modelMapper.map(card, CardDto.class);
+    }
+
     public List<CardDto> mapCardsListToDto(Collection<Card> cards) {
         return cards.stream()
-                .map(card -> modelMapper.map(card, CardDto.class))
+                .map(this::mapCardToCardDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void transferMoney(Long idFrom, Long idTo, Long amount) {
+    public Card transferMoney(Long idFrom, Long idTo, Long amount) {
         Card from = cardRepository.getOne(idFrom);
         Card to = cardRepository.getOne(idTo);
-        Long amountFrom = from.getAmount();
-        if (amountFrom < amount)
-            throw new IllegalArgumentsPassed("No money available");
-        from.setAmount(amountFrom - amount);
+        from.setAmount(from.getAmount() - amount);
         to.setAmount(to.getAmount() + amount);
-        cardRepository.saveAll(Arrays.asList(from, to));
+        Card updatedFrom = cardRepository.save(from);
+        if (updatedFrom.getAmount() < 0)
+            throw new IllegalArgumentsPassed("Not enough money");
+        cardRepository.save(to);
         cardRepository.flush();
+        return updatedFrom;
     }
 
     @Transactional(rollbackFor = Exception.class)
     public Card deposit(Long id, Long amount) {
         Card card = cardRepository.getOne(id);
         card.setAmount(card.getAmount() + amount);
+        return cardRepository.saveAndFlush(card);
+    }
+
+    @Transactional
+    public Card createCard() {
+        Card card = new Card();
         return cardRepository.saveAndFlush(card);
     }
 }

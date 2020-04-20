@@ -18,8 +18,8 @@ public class Card implements Serializable {
     private Long amount;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "FK_CUSTOMER_ID",  nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "fk_user_id",  nullable = false)
+    private User user;
 
     public Long getCardId() {
         return cardId;
@@ -37,11 +37,11 @@ public class Card implements Serializable {
         this.amount = amount;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public User getUser() {
+        return user;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

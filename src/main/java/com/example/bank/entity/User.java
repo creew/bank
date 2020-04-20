@@ -4,21 +4,21 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
-@Table(name="CUSTOMERS")
-public class Customer implements UserDetails {
+@Table(name= "users")
+public class User implements UserDetails {
 
     private static final long serialVersionUID = 7966761402099597504L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CUSTOMER_ID")
-    private Long customerId;
+    @Column(name = "USER_ID")
+    private Long userId;
+
+    @Column(name = "UUID", length=36)
+    private String uuid;
 
     @Column(name = "LOGIN", nullable = false)
     private String login;
@@ -35,15 +35,18 @@ public class Customer implements UserDetails {
     @Column(name = "PATRONYMIC", nullable = false)
     private String patronymic;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Card> cardSet = new HashSet<>();
 
-    public Long getCustomerId() {
-        return customerId;
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    private AuthorizationToken authorizationToken;
+
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setCustomerId(Long customerId) {
-        this.customerId = customerId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getLogin() {
@@ -118,5 +121,29 @@ public class Customer implements UserDetails {
 
     public Set<Card> getCardSet() {
         return cardSet;
+    }
+
+    public AuthorizationToken getAuthorizationToken() {
+        return authorizationToken;
+    }
+
+    public void setAuthorizationToken(AuthorizationToken authorizationToken) {
+        this.authorizationToken = authorizationToken;
+    }
+
+    public User(UUID uuid) {
+        this.uuid = uuid.toString();
+    }
+
+    public User() {
+        this(UUID.randomUUID());
+    }
+
+    public UUID getUuid() {
+        return UUID.fromString(uuid);
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 }

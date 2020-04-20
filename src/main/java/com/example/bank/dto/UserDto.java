@@ -1,17 +1,25 @@
 package com.example.bank.dto;
 
-public class CustomerDto {
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+public class UserDto {
+
+    @JsonProperty("login")
     private String login;
 
+    @JsonProperty("password")
     private String password;
 
+    @JsonProperty("first_name")
     private String firstName;
 
+    @JsonProperty("last_name")
     private String lastName;
 
+    @JsonProperty("patronymic")
     private String patronymic;
 
+    @JsonProperty("password_confirm")
     private String passwordConfirm;
 
     public String getLogin() {
@@ -40,6 +48,18 @@ public class CustomerDto {
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public UserDto() {
+    }
+
+    public UserDto(String login, String password, String firstName, String lastName, String patronymic, String passwordConfirm) {
+        this.login = login;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.patronymic = patronymic;
+        this.passwordConfirm = passwordConfirm;
     }
 
     public void setPassword(String password) {

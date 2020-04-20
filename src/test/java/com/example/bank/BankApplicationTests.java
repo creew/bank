@@ -1,10 +1,21 @@
 package com.example.bank;
 
+import com.example.bank.dto.UserDto;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
-@SpringBootTest
+//@SpringBootTest
 class BankApplicationTests {
+
+    private RestTemplate restTemplate = new RestTemplate();
+
+    @Test
+    void testRegister() {
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://localhost:8080/api/registration",
+                new UserDto("12", "12", "12", "12", "12", "12"), String.class);
+        System.out.println(responseEntity.getBody());
+    }
 
     @Test
     void contextLoads() {
