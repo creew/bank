@@ -146,4 +146,27 @@ public class User implements UserDetails {
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return userId.equals(user.userId) &&
+                uuid.equals(user.uuid) &&
+                login.equals(user.login) &&
+                password.equals(user.password) &&
+                firstName.equals(user.firstName) &&
+                lastName.equals(user.lastName) &&
+                patronymic.equals(user.patronymic);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, uuid, login, password, firstName, lastName, patronymic);
+    }
+
+    public String getPrincipal() {
+        return firstName + " " + patronymic + " " + lastName.substring(0, 1);
+    }
 }

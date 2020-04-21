@@ -21,6 +21,9 @@ public class Card implements Serializable {
     @JoinColumn(name = "fk_user_id",  nullable = false)
     private User user;
 
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "cardFrom", cascade = CascadeType.ALL)
+    private VerificationToken verificationToken;
+
     public Long getCardId() {
         return cardId;
     }
@@ -43,5 +46,13 @@ public class Card implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public VerificationToken getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(VerificationToken verificationToken) {
+        this.verificationToken = verificationToken;
     }
 }

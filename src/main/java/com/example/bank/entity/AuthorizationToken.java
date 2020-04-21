@@ -22,8 +22,8 @@ public class AuthorizationToken implements Serializable {
     @Column(name = "time_created")
     private Date timeCreated;
 
-    @Column(name = "expiration_date")
-    private Date expirationDate;
+    @Column(name = "time_expiration")
+    private Date timeExpiration;
 
     @JoinColumn(name = "fk_user_id")
     @OneToOne(fetch = FetchType.LAZY)
@@ -39,11 +39,11 @@ public class AuthorizationToken implements Serializable {
         this.token = UUID.randomUUID().toString();
         this.user = user;
         this.timeCreated = new Date();
-        this.expirationDate = new Date(System.currentTimeMillis() + (timeToLiveInSeconds * 1000L));
+        this.timeExpiration = new Date(System.currentTimeMillis() + (timeToLiveInSeconds * 1000L));
     }
 
     public boolean hasExpired() {
-        return this.expirationDate != null && this.expirationDate.before(new Date());
+        return this.timeExpiration != null && this.timeExpiration.before(new Date());
     }
 
     public String getToken() {
@@ -74,12 +74,12 @@ public class AuthorizationToken implements Serializable {
         this.timeCreated = timeCreated;
     }
 
-    public Date getExpirationDate() {
-        return expirationDate;
+    public Date getTimeExpiration() {
+        return timeExpiration;
     }
 
-    public void setExpirationDate(Date expirationDate) {
-        this.expirationDate = expirationDate;
+    public void setTimeExpiration(Date expirationDate) {
+        this.timeExpiration = expirationDate;
     }
 
     public void setUser(User user) {

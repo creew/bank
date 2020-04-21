@@ -2,7 +2,6 @@ package com.example.bank.service;
 
 import com.example.bank.dao.UserRepository;
 import com.example.bank.dto.AuthenticatedUserTokenDto;
-import com.example.bank.dto.CredentialsDto;
 import com.example.bank.dto.UserDto;
 import com.example.bank.entity.AuthorizationToken;
 import com.example.bank.entity.User;
@@ -70,15 +69,20 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public AuthenticatedUserTokenDto loginUser(CredentialsDto cred) {
-        User searchedForUser = userRepository.findUserByLogin(cred.getUsername());
+    public AuthenticatedUserTokenDto loginUser(String username, String password) {
+        User searchedForUser = userRepository.findUserByLogin(username);
         if (searchedForUser == null) {
             throw new IllegalArgumentsPassed("User not found");
         }
-        if (!searchedForUser.getPassword().equals(bCryptPasswordEncoder.encode(cred.getPassword()))) {
+        String cryptedPassword = bCryptPasswordEncoder.encode(password);
+        if (!bCryptPasswordEncoder.matches(password, cryptedPassword)) {
             throw new WrongPasswordException("Incorrect password");
         }
         return new AuthenticatedUserTokenDto(searchedForUser.getUuid().toString(),
                 createAuthorizationToken(searchedForUser).getToken());
+    }
+
+    public User findUserByUuid(String uuid) {
+        return userRepository.findUserByUuid(uuid);
     }
 }
