@@ -2,7 +2,7 @@ package com.example.bank.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UserDto {
+public class UserRegisterDto {
 
     @JsonProperty("login")
     private String login;
@@ -50,10 +50,10 @@ public class UserDto {
         this.login = login;
     }
 
-    public UserDto() {
+    public UserRegisterDto() {
     }
 
-    public UserDto(String login, String password, String firstName, String lastName, String patronymic, String passwordConfirm) {
+    public UserRegisterDto(String login, String password, String firstName, String lastName, String patronymic, String passwordConfirm) {
         this.login = login;
         this.password = password;
         this.firstName = firstName;

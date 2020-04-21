@@ -1,10 +1,10 @@
 package com.example.bank.controller;
 
-import com.example.bank.service.UserAuthenticationService;
 import com.example.bank.dto.CredentialsDto;
-import com.example.bank.dto.UserDto;
+import com.example.bank.dto.UserRegisterDto;
 import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.WrongPasswordException;
+import com.example.bank.service.UserAuthenticationService;
 import com.example.bank.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -35,11 +35,11 @@ public class AuthController {
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public Map<String, String> registerUser(@RequestBody UserDto userDto) {
-        if (!userDto.getPassword().equals(userDto.getPasswordConfirm())){
+    public Map<String, String> registerUser(@RequestBody UserRegisterDto userRegisterDto) {
+        if (!userRegisterDto.getPassword().equals(userRegisterDto.getPasswordConfirm())){
             throw new IllegalArgumentsPassed("Пароли не совпадают");
         }
-        return Collections.singletonMap("bearer", userService.createUser(userDto).toString());
+        return Collections.singletonMap("bearer", userService.createUser(userRegisterDto).toString());
     }
 
 }

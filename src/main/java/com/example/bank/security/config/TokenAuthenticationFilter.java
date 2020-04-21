@@ -3,7 +3,6 @@ package com.example.bank.security.config;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
@@ -25,16 +24,15 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
     }
 
     private String removeBearer(String str) {
-        if (str.length() >= TokenAuthenticationFilter.BEARER.length()) {
-            if (str.substring(0, TokenAuthenticationFilter.BEARER.length()).equals(TokenAuthenticationFilter.BEARER)) {
-                return str.substring(TokenAuthenticationFilter.BEARER.length() + 1);
-            }
+        int bearerLength = BEARER.length();
+        if (str.length() >= bearerLength && str.substring(0, bearerLength).equals(BEARER)) {
+            return str.substring(bearerLength + 1);
         }
         return str;
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String param = ofNullable(request.getHeader(AUTHORIZATION))
                 .orElse(request.getParameter("t"));
         String tokenFull = ofNullable(param)
@@ -42,7 +40,7 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
                 .map(String::trim)
                 .orElseThrow(() -> new BadCredentialsException("Missing Authentication Token"));
         String[] splitToken = tokenFull.split("\\.");
-        if (splitToken.length != 2 ) {
+        if (splitToken.length != 2) {
             throw new BadCredentialsException("Wrong Authentication Token");
         }
         Authentication auth = new UsernamePasswordAuthenticationToken(splitToken[0], splitToken[1]);

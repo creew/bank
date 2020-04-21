@@ -8,18 +8,15 @@ import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.IllegalCardIdPassed;
 import com.example.bank.service.CardsService;
 import com.example.bank.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class Controller {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final CardsService cardsService;
 
@@ -31,11 +28,30 @@ public class Controller {
     }
 
     @GetMapping("/cards")
-    public List<CardDto> getAllCards(@AuthenticationPrincipal final User user) {
+    public List<CardDto> getAllCards(@AuthenticationPrincipal User user) {
         User fromBase = userService.getUserById(user.getUserId());
-        List<CardDto> tasksList;
-        tasksList = cardsService.mapCardsListToDto(fromBase.getCardSet());
-        return tasksList;
+        return fromBase.getCardSet().stream()
+                .map(cardsService::mapCardToCardDto)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/cards/{id}")
+    public CardDto getOneCards(@AuthenticationPrincipal final User user,
+                               @PathVariable Long id) {
+        User fromBase = userService.getUserById(user.getUserId());
+        return fromBase.getCardSet().stream()
+                .filter(card -> card.getCardId().equals(id))
+                .map(cardsService::mapCardToCardDto)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentsPassed("it is not your card"));
+    }
+
+    @DeleteMapping("/cards/{id}")
+    public void deleteOneCards(@AuthenticationPrincipal final User user,
+                               @PathVariable Long id) {
+        if (!cardsService.checkIsUsersCard(user, id))
+            throw new IllegalArgumentsPassed("it is not your card");
+        cardsService.deleteCardById(id);
     }
 
     @GetMapping("/transfer/{cardIdFrom}")
@@ -67,5 +83,11 @@ public class Controller {
                 .findAny()
                 .orElseThrow(() -> new IllegalCardIdPassed(cardId + " is not your card"));
         cardsService.deposit(cardId, amount);
+    }
+
+    @DeleteMapping("/users")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@AuthenticationPrincipal User user) {
+        userService.deleteUserById(user.getUserId());
     }
 }

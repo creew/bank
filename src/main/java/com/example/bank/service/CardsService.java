@@ -13,11 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class CardsService {
 
@@ -37,12 +32,6 @@ public class CardsService {
 
     public CardDto mapCardToCardDto(Card card) {
         return modelMapper.map(card, CardDto.class);
-    }
-
-    public List<CardDto> mapCardsListToDto(Collection<Card> cards) {
-        return cards.stream()
-                .map(this::mapCardToCardDto)
-                .collect(Collectors.toList());
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -100,6 +89,14 @@ public class CardsService {
         cardRepository.save(cardTo);
         cardRepository.flush();
         return CardDto.fromCard(updatedFrom);
+    }
 
+    public boolean checkIsUsersCard(User user, Long cardId) {
+        Card card = cardRepository.getOne(cardId);
+        return card.getUser().equals(user);
+    }
+
+    public void deleteCardById(Long cardId) {
+        cardRepository.deleteById(cardId);
     }
 }

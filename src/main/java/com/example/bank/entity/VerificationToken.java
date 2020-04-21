@@ -1,12 +1,15 @@
 package com.example.bank.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
 @Entity
 @Table(name = "verification_token")
-public class VerificationToken {
+public class VerificationToken implements Serializable {
+
+    private static final Integer DEFAULT_TIME_TO_LIVE_IN_SECONDS = (60 * 5);
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -44,7 +47,7 @@ public class VerificationToken {
     }
 
     public VerificationToken(Card cardFrom) {
-        this(cardFrom, 60 * 5);
+        this(cardFrom, DEFAULT_TIME_TO_LIVE_IN_SECONDS);
     }
 
     public boolean hasExpired() {

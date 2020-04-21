@@ -2,7 +2,7 @@ package com.example.bank.service;
 
 import com.example.bank.dao.UserRepository;
 import com.example.bank.dto.AuthenticatedUserTokenDto;
-import com.example.bank.dto.UserDto;
+import com.example.bank.dto.UserRegisterDto;
 import com.example.bank.entity.AuthorizationToken;
 import com.example.bank.entity.User;
 import com.example.bank.exception.DuplicateEntryException;
@@ -39,7 +39,7 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public User createNewCustomer(UserDto customer) {
+    public User createNewCustomer(UserRegisterDto customer) {
         User newUser = new User();
         newUser.setLogin(customer.getLogin());
         newUser.setFirstName(customer.getFirstName());
@@ -59,7 +59,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public AuthenticatedUserTokenDto createUser(UserDto request) {
+    public AuthenticatedUserTokenDto createUser(UserRegisterDto request) {
         User searchedForUser = userRepository.findUserByLogin(request.getLogin());
         if (searchedForUser != null) {
             throw new DuplicateEntryException("User: " + searchedForUser.getLogin() + " already exists");
@@ -84,5 +84,9 @@ public class UserService implements UserDetailsService {
 
     public User findUserByUuid(String uuid) {
         return userRepository.findUserByUuid(uuid);
+    }
+
+    public void deleteUserById(Long id) {
+        userRepository.deleteById(id);
     }
 }

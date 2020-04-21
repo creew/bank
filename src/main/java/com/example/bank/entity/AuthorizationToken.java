@@ -9,7 +9,7 @@ import java.util.UUID;
 @Table(name="authorization_token")
 public class AuthorizationToken implements Serializable {
 
-    private static final Integer DEFAULT_TIME_TO_LIVE_IN_SECONDS = (60 * 60 * 24 * 30); //30 Days
+    private static final Integer DEFAULT_TIME_TO_LIVE_IN_SECONDS = (60 * 60 * 24 * 30);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

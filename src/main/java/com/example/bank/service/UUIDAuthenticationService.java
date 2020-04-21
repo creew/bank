@@ -12,7 +12,10 @@ import java.util.Optional;
 public class UUIDAuthenticationService implements UserAuthenticationService {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
+
+    @Autowired
+    private AuthorizationService authorizationService;
 
     @Override
     public Optional<String> login(String username, String password) {
@@ -37,6 +40,9 @@ public class UUIDAuthenticationService implements UserAuthenticationService {
 
     @Override
     public void logout(User user) {
-
+        AuthorizationToken authorizationToken = user.getAuthorizationToken();
+        if (authorizationToken != null) {
+            authorizationService.deleteAuthorizationToken(authorizationToken.getId());
+        }
     }
 }
