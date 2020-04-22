@@ -9,15 +9,14 @@ import com.example.bank.exception.DuplicateEntryException;
 import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.WrongPasswordException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
-public class UserService implements UserDetailsService {
+public class UsersService {
 
     @Autowired
     private UserRepository userRepository;
@@ -28,15 +27,6 @@ public class UserService implements UserDetailsService {
     public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentsPassed("No customer with id " + id + " found"));
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.findUserByLogin(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-        return user;
     }
 
     public User createNewCustomer(UserRegisterDTO customer) {
@@ -55,7 +45,7 @@ public class UserService implements UserDetailsService {
         if (token == null || user.getAuthorizationToken().hasExpired()) {
             token = new AuthorizationToken(user);
             user.setAuthorizationToken(token);
-            userRepository.save(user);
+            userRepository.saveAndFlush(user);
         }
         return token;
     }
@@ -67,7 +57,7 @@ public class UserService implements UserDetailsService {
             throw new DuplicateEntryException("User: " + searchedForUser.getLogin() + " already exists");
         }
         User saved = userRepository.save(createNewCustomer(request));
-        return new AuthenticatedUserTokenDTO(saved.getUuid().toString(), createAuthorizationToken(saved).getToken());
+        return new AuthenticatedUserTokenDTO(createAuthorizationToken(saved).getToken());
     }
 
     @Transactional
@@ -80,8 +70,11 @@ public class UserService implements UserDetailsService {
         if (!bCryptPasswordEncoder.matches(password, cryptedPassword)) {
             throw new WrongPasswordException("Incorrect password");
         }
-        return new AuthenticatedUserTokenDTO(searchedForUser.getUuid().toString(),
-                createAuthorizationToken(searchedForUser).getToken());
+        return new AuthenticatedUserTokenDTO(createAuthorizationToken(searchedForUser).getToken());
+    }
+
+    public Optional<User> findUserByLogin(String login) {
+        return Optional.of(userRepository.findUserByLogin(login));
     }
 
     public User findUserByUuid(String uuid) {

@@ -41,9 +41,9 @@ public class CardsService {
     }
 
     @Transactional
-    public VerifyTransferDTO createVerifyRequest(User userFrom, long cardIdFrom, long cardIdTo, long amount) {
+    public VerifyTransferDTO createVerifyRequest(long userFromId, long cardIdFrom, long cardIdTo, long amount) {
         Card userCard = cardRepository.getOne(cardIdFrom);
-        if (!userCard.getUser().equals(userFrom))
+        if (!userCard.getUser().getUserId().equals(userFromId))
             throw new IllegalCardIdPassed("Card id: " + cardIdFrom + " is not your");
         if (cardIdFrom == cardIdTo)
             throw new IllegalArgumentsPassed("Cards from and to are identical");
@@ -60,7 +60,7 @@ public class CardsService {
     }
 
     @Transactional
-    public CardDTO completeTransfer(User userFrom, CompleteTransferDTO completeTransferDto) {
+    public CardDTO completeTransfer(long userFromId, CompleteTransferDTO completeTransferDto) {
         String token = completeTransferDto.getToken();
         VerificationToken verificationToken = verificationTokenRepository
                 .findVerificationTokenByToken(token);
@@ -71,7 +71,7 @@ public class CardsService {
             throw new IllegalArgumentsPassed("Token expired");
         Card cardFrom = verificationToken.getCardFrom();
         Card cardTo = verificationToken.getCardTo();
-        if (!cardFrom.getUser().equals(userFrom))
+        if (!cardFrom.getUser().getUserId().equals(userFromId))
             throw new IllegalArgumentsPassed("Card is not your");
         verificationToken.setActive(false);
         verificationTokenRepository.saveAndFlush(verificationToken);

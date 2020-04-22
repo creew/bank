@@ -1,7 +1,7 @@
 package com.example.bank.security.config;
 
-import com.example.bank.entity.User;
-import com.example.bank.service.UserAuthenticationService;
+import com.example.bank.dto.UserDTO;
+import com.example.bank.service.authentication.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
@@ -21,10 +21,9 @@ public class TokenAuthenticationProvider extends AbstractUserDetailsAuthenticati
     }
 
     @Override
-    protected User retrieveUser(String username, UsernamePasswordAuthenticationToken authentication) {
-        Object principal = authentication.getPrincipal();
+    protected UserDTO retrieveUser(String username, UsernamePasswordAuthenticationToken authentication) {
         Object token = authentication.getCredentials();
-        return auth.findByNameToken(String.valueOf(principal), String.valueOf(token))
+        return auth.findByToken(String.valueOf(token))
                 .orElseThrow(() -> new UsernameNotFoundException("Cannot find user with authentication token=" + token));
     }
 }

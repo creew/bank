@@ -1,8 +1,11 @@
-package com.example.bank.service;
+package com.example.bank.service.authentication;
 
 import com.example.bank.dto.AuthenticatedUserTokenDTO;
+import com.example.bank.dto.UserDTO;
 import com.example.bank.entity.AuthorizationToken;
 import com.example.bank.entity.User;
+import com.example.bank.service.AuthorizationService;
+import com.example.bank.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,30 +15,20 @@ import java.util.Optional;
 public class UUIDAuthenticationService implements UserAuthenticationService {
 
     @Autowired
-    private UserService userService;
+    private UsersService usersService;
 
     @Autowired
     private AuthorizationService authorizationService;
 
     @Override
     public Optional<String> login(String username, String password) {
-        AuthenticatedUserTokenDTO tokenDto = userService.loginUser(username, password);
-        return Optional.of(tokenDto.toString());
+        AuthenticatedUserTokenDTO tokenDto = usersService.loginUser(username, password);
+        return Optional.of(tokenDto.getToken());
     }
 
     @Override
-    public Optional<User> findByNameToken(String userId, String token) {
-        User user = userService.findUserByUuid(userId);
-        if (user != null) {
-            AuthorizationToken authorizationToken = user.getAuthorizationToken();
-            if (authorizationToken != null
-                    && !authorizationToken.hasExpired()
-                    && authorizationToken.getToken().equals(token)
-            ) {
-                return Optional.of(user);
-            }
-        }
-        return Optional.empty();
+    public Optional<UserDTO> findByToken(String token) {
+        return authorizationService.getUserFromAuthorizationToken(token);
     }
 
     @Override
