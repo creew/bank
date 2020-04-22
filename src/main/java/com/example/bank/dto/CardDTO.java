@@ -8,23 +8,23 @@ public class CardDTO implements Serializable {
 
     private static final long serialVersionUID = -1986157594950218606L;
 
-    private Long cardId;
+    private long cardId;
 
-    private Long amount;
+    private long amount;
 
-    public Long getCardId() {
+    public long getCardId() {
         return cardId;
     }
 
-    public Long getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public void setCardId(Long cardId) {
+    public void setCardId(long cardId) {
         this.cardId = cardId;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
     }
 

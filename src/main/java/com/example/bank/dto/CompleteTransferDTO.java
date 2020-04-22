@@ -11,4 +11,11 @@ public class CompleteTransferDTO implements Serializable {
     public String getToken() {
         return token;
     }
+
+    public CompleteTransferDTO() {
+    }
+
+    public CompleteTransferDTO(String token) {
+        this.token = token;
+    }
 }

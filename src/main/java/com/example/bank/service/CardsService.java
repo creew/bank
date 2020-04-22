@@ -64,23 +64,24 @@ public class CardsService {
         String token = completeTransferDto.getToken();
         VerificationToken verificationToken = verificationTokenRepository
                 .findVerificationTokenByToken(token);
-        if (token == null) {
+        if (verificationToken == null) {
             throw new IllegalArgumentsPassed("Token not found");
         }
-        if (verificationToken.hasExpired())
+        if (!verificationToken.isActive() || verificationToken.hasExpired())
             throw new IllegalArgumentsPassed("Token expired");
         Card cardFrom = verificationToken.getCardFrom();
         Card cardTo = verificationToken.getCardTo();
         if (!cardFrom.getUser().equals(userFrom))
             throw new IllegalArgumentsPassed("Card is not your");
+        verificationToken.setActive(false);
+        verificationTokenRepository.saveAndFlush(verificationToken);
         Long amount = verificationToken.getAmount();
         cardFrom.setAmount(cardFrom.getAmount() - amount);
         cardTo.setAmount(cardTo.getAmount() + amount);
         Card updatedFrom = cardRepository.save(cardFrom);
         if (updatedFrom.getAmount() < 0)
             throw new IllegalArgumentsPassed("Not enough money");
-        cardRepository.save(cardTo);
-        cardRepository.flush();
+        cardRepository.saveAndFlush(cardTo);
         return CardDTO.fromCard(updatedFrom);
     }
 

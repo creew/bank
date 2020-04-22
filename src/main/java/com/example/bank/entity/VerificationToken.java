@@ -28,6 +28,9 @@ public class VerificationToken implements Serializable {
     @Column(name = "time_expiration")
     private Date timeExpiration;
 
+    @Column(name = "active")
+    private Boolean active;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_card_from_id")
     private Card cardFrom;
@@ -43,6 +46,7 @@ public class VerificationToken implements Serializable {
         this.token = UUID.randomUUID().toString();
         this.cardFrom = cardFrom;
         this.timeCreated = new Date();
+        this.active = true;
         this.timeExpiration = new Date(System.currentTimeMillis() + (timeToLiveInSeconds * 1000L));
     }
 
@@ -100,5 +104,13 @@ public class VerificationToken implements Serializable {
 
     public void setCardTo(Card cardTo) {
         this.cardTo = cardTo;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

@@ -17,4 +17,12 @@ public class RequestTransferDTO {
     public long getAmount() {
         return amount;
     }
+
+    public RequestTransferDTO() {
+    }
+
+    public RequestTransferDTO(long cardIdTo, long amount) {
+        this.cardIdTo = cardIdTo;
+        this.amount = amount;
+    }
 }

@@ -2,6 +2,7 @@ package com.example.bank.controller;
 
 import com.example.bank.dto.CardDTO;
 import com.example.bank.dto.CompleteTransferDTO;
+import com.example.bank.dto.RequestTransferDTO;
 import com.example.bank.dto.VerifyTransferDTO;
 import com.example.bank.entity.User;
 import com.example.bank.exception.IllegalArgumentsPassed;
@@ -21,16 +22,16 @@ public class TransferController {
     }
 
 
-    @GetMapping("/{cardIdFrom}")
+    @PutMapping("/{cardIdFrom}")
     @ResponseStatus(HttpStatus.OK)
     public VerifyTransferDTO transferRequest(@AuthenticationPrincipal User user,
                                              @PathVariable Long cardIdFrom,
-                                             @RequestParam("card_id_to") Long cardIdTo,
-                                             @RequestParam("amount") Long amount) {
-        if (amount <= 0) {
+                                             @RequestBody RequestTransferDTO requestTransferDTO) {
+        if (requestTransferDTO.getAmount() <= 0) {
             throw new IllegalArgumentsPassed("Amount less than or equal zero");
         }
-        return cardsService.createVerifyRequest(user, cardIdFrom, cardIdTo, amount);
+        return cardsService.createVerifyRequest(user, cardIdFrom, requestTransferDTO.getCardIdTo(),
+                requestTransferDTO.getAmount());
     }
 
     @PutMapping("")

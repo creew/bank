@@ -4,6 +4,7 @@ import com.example.bank.dto.CardDTO;
 import com.example.bank.dto.DepositCardDTO;
 import com.example.bank.entity.Card;
 import com.example.bank.entity.User;
+import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.IllegalCardIdPassed;
 import com.example.bank.service.CardsService;
 import com.example.bank.service.UserService;
@@ -11,9 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -56,6 +55,9 @@ public class CardsController {
     public CardDTO depositCard(@AuthenticationPrincipal final User user,
                             @PathVariable Long cardId,
                             @RequestBody DepositCardDTO depositCardDTO){
+        if (depositCardDTO.getAmount() <= 0) {
+            throw new IllegalArgumentsPassed("amount less than or equal zero");
+        }
         Card card = cardsService.checkIsUsersCard(user, cardId).orElseThrow(IllegalCardIdPassed::new);
         return CardDTO.fromCard(cardsService.deposit(card, depositCardDTO.getAmount()));
     }

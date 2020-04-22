@@ -36,6 +36,9 @@ public class VerifyTransferDTO implements Serializable {
         this.token = token;
     }
 
+    public VerifyTransferDTO() {
+    }
+
     public VerifyTransferDTO(String principal, long amount, String token) {
         this.principal = principal;
         this.amount = amount;
