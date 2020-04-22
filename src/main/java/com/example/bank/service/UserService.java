@@ -1,8 +1,8 @@
 package com.example.bank.service;
 
 import com.example.bank.dao.UserRepository;
-import com.example.bank.dto.AuthenticatedUserTokenDto;
-import com.example.bank.dto.UserRegisterDto;
+import com.example.bank.dto.AuthenticatedUserTokenDTO;
+import com.example.bank.dto.UserRegisterDTO;
 import com.example.bank.entity.AuthorizationToken;
 import com.example.bank.entity.User;
 import com.example.bank.exception.DuplicateEntryException;
@@ -39,7 +39,7 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public User createNewCustomer(UserRegisterDto customer) {
+    public User createNewCustomer(UserRegisterDTO customer) {
         User newUser = new User();
         newUser.setLogin(customer.getLogin());
         newUser.setFirstName(customer.getFirstName());
@@ -53,7 +53,7 @@ public class UserService implements UserDetailsService {
     public AuthorizationToken createAuthorizationToken(User user) {
         AuthorizationToken token = user.getAuthorizationToken();
         if (token == null || user.getAuthorizationToken().hasExpired()) {
-            token = new AuthorizationToken();
+            token = new AuthorizationToken(user);
             user.setAuthorizationToken(token);
             userRepository.save(user);
         }
@@ -61,17 +61,17 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public AuthenticatedUserTokenDto createUser(UserRegisterDto request) {
+    public AuthenticatedUserTokenDTO createUser(UserRegisterDTO request) {
         User searchedForUser = userRepository.findUserByLogin(request.getLogin());
         if (searchedForUser != null) {
             throw new DuplicateEntryException("User: " + searchedForUser.getLogin() + " already exists");
         }
         User saved = userRepository.save(createNewCustomer(request));
-        return new AuthenticatedUserTokenDto(saved.getUuid().toString(), createAuthorizationToken(saved).getToken());
+        return new AuthenticatedUserTokenDTO(saved.getUuid().toString(), createAuthorizationToken(saved).getToken());
     }
 
     @Transactional
-    public AuthenticatedUserTokenDto loginUser(String username, String password) {
+    public AuthenticatedUserTokenDTO loginUser(String username, String password) {
         User searchedForUser = userRepository.findUserByLogin(username);
         if (searchedForUser == null) {
             throw new IllegalArgumentsPassed("User not found");
@@ -80,7 +80,7 @@ public class UserService implements UserDetailsService {
         if (!bCryptPasswordEncoder.matches(password, cryptedPassword)) {
             throw new WrongPasswordException("Incorrect password");
         }
-        return new AuthenticatedUserTokenDto(searchedForUser.getUuid().toString(),
+        return new AuthenticatedUserTokenDTO(searchedForUser.getUuid().toString(),
                 createAuthorizationToken(searchedForUser).getToken());
     }
 

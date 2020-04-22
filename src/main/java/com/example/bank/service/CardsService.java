@@ -2,15 +2,18 @@ package com.example.bank.service;
 
 import com.example.bank.dao.CardRepository;
 import com.example.bank.dao.VerificationTokenRepository;
-import com.example.bank.dto.CardDto;
-import com.example.bank.dto.CompleteTransferDto;
-import com.example.bank.dto.VerifyTransferDto;
+import com.example.bank.dto.CardDTO;
+import com.example.bank.dto.CompleteTransferDTO;
+import com.example.bank.dto.VerifyTransferDTO;
 import com.example.bank.entity.Card;
 import com.example.bank.entity.User;
 import com.example.bank.entity.VerificationToken;
 import com.example.bank.exception.IllegalArgumentsPassed;
+import com.example.bank.exception.IllegalCardIdPassed;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class CardsService {
@@ -26,8 +29,7 @@ public class CardsService {
     }
 
     @Transactional
-    public Card deposit(Long id, Long amount) {
-        Card card = cardRepository.getOne(id);
+    public Card deposit(Card card, Long amount) {
         card.setAmount(card.getAmount() + amount);
         return cardRepository.saveAndFlush(card);
     }
@@ -39,10 +41,10 @@ public class CardsService {
     }
 
     @Transactional
-    public VerifyTransferDto createVerifyRequest(User userFrom, long cardIdFrom, long cardIdTo, long amount) {
+    public VerifyTransferDTO createVerifyRequest(User userFrom, long cardIdFrom, long cardIdTo, long amount) {
         Card userCard = cardRepository.getOne(cardIdFrom);
         if (!userCard.getUser().equals(userFrom))
-            throw new IllegalArgumentsPassed("Card id: " + cardIdFrom + " is not your");
+            throw new IllegalCardIdPassed("Card id: " + cardIdFrom + " is not your");
         if (cardIdFrom == cardIdTo)
             throw new IllegalArgumentsPassed("Cards from and to are identical");
         Card cardTo = cardRepository.getOne(cardIdTo);
@@ -54,11 +56,11 @@ public class CardsService {
         verificationToken.setCardTo(cardTo);
         userCard.setVerificationToken(verificationToken);
         cardRepository.saveAndFlush(userCard);
-        return new VerifyTransferDto(cardTo.getUser().getPrincipal(), amount, verificationToken.getToken());
+        return new VerifyTransferDTO(cardTo.getUser().getPrincipal(), amount, verificationToken.getToken());
     }
 
     @Transactional
-    public CardDto completeTransfer(User userFrom, CompleteTransferDto completeTransferDto) {
+    public CardDTO completeTransfer(User userFrom, CompleteTransferDTO completeTransferDto) {
         String token = completeTransferDto.getToken();
         VerificationToken verificationToken = verificationTokenRepository
                 .findVerificationTokenByToken(token);
@@ -79,17 +81,23 @@ public class CardsService {
             throw new IllegalArgumentsPassed("Not enough money");
         cardRepository.save(cardTo);
         cardRepository.flush();
-        return CardDto.fromCard(updatedFrom);
+        return CardDTO.fromCard(updatedFrom);
     }
 
     @Transactional(readOnly = true)
-    public boolean checkIsUsersCard(User user, Long cardId) {
+    public Optional<Card> checkIsUsersCard(User user, Long cardId) {
         Card card = cardRepository.getOne(cardId);
-        return card.getUser().equals(user);
+        if (card.getUser().equals(user))
+            return Optional.of(card);
+        return Optional.empty();
     }
 
 
     public void deleteCardById(Long cardId) {
         cardRepository.deleteById(cardId);
+    }
+
+    public void deleteCard(Card card) {
+        cardRepository.deleteById(card.getCardId());
     }
 }

@@ -2,7 +2,7 @@ package com.example.bank.dto;
 
 import java.io.Serializable;
 
-public class VerifyTransferDto implements Serializable {
+public class VerifyTransferDTO implements Serializable {
 
     private static final long serialVersionUID = 3410991059459458849L;
 
@@ -36,7 +36,7 @@ public class VerifyTransferDto implements Serializable {
         this.token = token;
     }
 
-    public VerifyTransferDto(String principal, long amount, String token) {
+    public VerifyTransferDTO(String principal, long amount, String token) {
         this.principal = principal;
         this.amount = amount;
         this.token = token;

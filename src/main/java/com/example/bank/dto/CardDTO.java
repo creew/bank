@@ -4,7 +4,7 @@ import com.example.bank.entity.Card;
 
 import java.io.Serializable;
 
-public class CardDto implements Serializable {
+public class CardDTO implements Serializable {
 
     private static final long serialVersionUID = -1986157594950218606L;
 
@@ -28,8 +28,8 @@ public class CardDto implements Serializable {
         this.amount = amount;
     }
 
-    public static CardDto fromCard(Card card) {
-        CardDto cardDto = new CardDto();
+    public static CardDTO fromCard(Card card) {
+        CardDTO cardDto = new CardDTO();
         cardDto.cardId = card.getCardId();
         cardDto.amount = card.getAmount();
         return cardDto;

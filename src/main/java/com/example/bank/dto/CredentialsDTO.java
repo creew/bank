@@ -2,7 +2,7 @@ package com.example.bank.dto;
 
 import java.io.Serializable;
 
-public class CredentialsDto implements Serializable {
+public class CredentialsDTO implements Serializable {
 
     private static final long serialVersionUID = 5423052010016531011L;
 
@@ -26,10 +26,10 @@ public class CredentialsDto implements Serializable {
         this.password = password;
     }
 
-    public CredentialsDto() {
+    public CredentialsDTO() {
     }
 
-    public CredentialsDto(String username, String password) {
+    public CredentialsDTO(String username, String password) {
         this.username = username;
         this.password = password;
     }

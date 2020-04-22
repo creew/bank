@@ -1,6 +1,6 @@
 package com.example.bank.service;
 
-import com.example.bank.dto.AuthenticatedUserTokenDto;
+import com.example.bank.dto.AuthenticatedUserTokenDTO;
 import com.example.bank.entity.AuthorizationToken;
 import com.example.bank.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class UUIDAuthenticationService implements UserAuthenticationService {
 
     @Override
     public Optional<String> login(String username, String password) {
-        AuthenticatedUserTokenDto tokenDto = userService.loginUser(username, password);
+        AuthenticatedUserTokenDTO tokenDto = userService.loginUser(username, password);
         return Optional.of(tokenDto.toString());
     }
 

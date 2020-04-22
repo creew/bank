@@ -8,4 +8,8 @@ public class IllegalCardIdPassed extends RuntimeException{
     public IllegalCardIdPassed(String message) {
         super(message);
     }
+
+    public IllegalCardIdPassed() {
+        this("Wrong card id passed");
+    }
 }

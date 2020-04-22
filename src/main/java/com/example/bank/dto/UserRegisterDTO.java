@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
-public class UserRegisterDto implements Serializable {
+public class UserRegisterDTO implements Serializable {
 
     private static final long serialVersionUID = -5148160983426777508L;
     @JsonProperty("login")
@@ -53,10 +53,10 @@ public class UserRegisterDto implements Serializable {
         this.login = login;
     }
 
-    public UserRegisterDto() {
+    public UserRegisterDTO() {
     }
 
-    public UserRegisterDto(String login, String password, String firstName, String lastName, String patronymic, String passwordConfirm) {
+    public UserRegisterDTO(String login, String password, String firstName, String lastName, String patronymic, String passwordConfirm) {
         this.login = login;
         this.password = password;
         this.firstName = firstName;
