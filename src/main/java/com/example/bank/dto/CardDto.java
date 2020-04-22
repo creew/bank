@@ -2,7 +2,11 @@ package com.example.bank.dto;
 
 import com.example.bank.entity.Card;
 
-public class CardDto {
+import java.io.Serializable;
+
+public class CardDto implements Serializable {
+
+    private static final long serialVersionUID = -1986157594950218606L;
 
     private Long cardId;
 

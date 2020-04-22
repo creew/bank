@@ -2,8 +2,11 @@ package com.example.bank.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class UserRegisterDto {
+import java.io.Serializable;
 
+public class UserRegisterDto implements Serializable {
+
+    private static final long serialVersionUID = -5148160983426777508L;
     @JsonProperty("login")
     private String login;
 

@@ -9,32 +9,23 @@ import com.example.bank.entity.Card;
 import com.example.bank.entity.User;
 import com.example.bank.entity.VerificationToken;
 import com.example.bank.exception.IllegalArgumentsPassed;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CardsService {
 
-    private final ModelMapper modelMapper;
-
     private final CardRepository cardRepository;
 
     private final VerificationTokenRepository verificationTokenRepository;
 
-    public CardsService(ModelMapper modelMapper,
-                        CardRepository cardRepository,
+    public CardsService(CardRepository cardRepository,
                         VerificationTokenRepository verificationTokenRepository) {
-        this.modelMapper = modelMapper;
         this.cardRepository = cardRepository;
         this.verificationTokenRepository = verificationTokenRepository;
     }
 
-    public CardDto mapCardToCardDto(Card card) {
-        return modelMapper.map(card, CardDto.class);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional
     public Card deposit(Long id, Long amount) {
         Card card = cardRepository.getOne(id);
         card.setAmount(card.getAmount() + amount);
@@ -42,8 +33,8 @@ public class CardsService {
     }
 
     @Transactional
-    public Card createCard() {
-        Card card = new Card();
+    public Card createCard(User user) {
+        Card card = new Card(user, 0L);
         return cardRepository.saveAndFlush(card);
     }
 
@@ -91,10 +82,12 @@ public class CardsService {
         return CardDto.fromCard(updatedFrom);
     }
 
+    @Transactional(readOnly = true)
     public boolean checkIsUsersCard(User user, Long cardId) {
         Card card = cardRepository.getOne(cardId);
         return card.getUser().equals(user);
     }
+
 
     public void deleteCardById(Long cardId) {
         cardRepository.deleteById(cardId);

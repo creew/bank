@@ -24,6 +24,14 @@ public class Card implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "cardFrom", cascade = CascadeType.ALL)
     private VerificationToken verificationToken;
 
+    public Card() {
+    }
+
+    public Card(User user, Long amount) {
+        this.user = user;
+        this.amount = amount;
+    }
+
     public Long getCardId() {
         return cardId;
     }

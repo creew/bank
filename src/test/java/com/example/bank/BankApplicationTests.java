@@ -29,7 +29,7 @@ class BankApplicationTests {
         this.restTemplate = builder.build();
     }
 
-    HttpHeaders createHeaders(String bearer){
+    static HttpHeaders createHeaders(String bearer){
         return new HttpHeaders() {{
             String authHeader = "Bearer: " + bearer;
             set( "Authorization", authHeader );
@@ -38,13 +38,13 @@ class BankApplicationTests {
 
     @Test
     void testRegister() {
-        int login = (int)(Math.random() * 1000000000);
+        int login = (int)(Math.random() * 1_000_000_000);
         ResponseEntity<JsonNode> responseEntity = restTemplate.postForEntity(BASE_URL + port + "/api/auth/signup",
                 new UserRegisterDto(Integer.toString(login), "1", "12", "12", "12", "1"), JsonNode.class);
         String bearer = responseEntity.getBody().get("bearer").asText();
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         HttpHeaders httpHeaders = createHeaders(bearer);
-        HttpEntity httpEntity = new HttpEntity(httpHeaders);
+        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> responseEntity1 = restTemplate.exchange(BASE_URL + port + "/api/users",
                 HttpMethod.DELETE,
                 httpEntity,

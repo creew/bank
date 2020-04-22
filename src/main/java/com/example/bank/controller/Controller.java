@@ -3,6 +3,7 @@ package com.example.bank.controller;
 import com.example.bank.dto.CardDto;
 import com.example.bank.dto.CompleteTransferDto;
 import com.example.bank.dto.VerifyTransferDto;
+import com.example.bank.entity.Card;
 import com.example.bank.entity.User;
 import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.IllegalCardIdPassed;
@@ -31,8 +32,15 @@ public class Controller {
     public List<CardDto> getAllCards(@AuthenticationPrincipal User user) {
         User fromBase = userService.getUserById(user.getUserId());
         return fromBase.getCardSet().stream()
-                .map(cardsService::mapCardToCardDto)
+                .map(CardDto::fromCard)
                 .collect(Collectors.toList());
+    }
+
+    @PutMapping("/cards")
+    public CardDto createNewCard(@AuthenticationPrincipal User user) {
+        User fromBase = userService.getUserById(user.getUserId());
+        Card card = cardsService.createCard(fromBase);
+        return CardDto.fromCard(card);
     }
 
     @GetMapping("/cards/{id}")
@@ -41,7 +49,7 @@ public class Controller {
         User fromBase = userService.getUserById(user.getUserId());
         return fromBase.getCardSet().stream()
                 .filter(card -> card.getCardId().equals(id))
-                .map(cardsService::mapCardToCardDto)
+                .map(CardDto::fromCard)
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentsPassed("it is not your card"));
     }

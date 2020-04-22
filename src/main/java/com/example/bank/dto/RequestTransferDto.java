@@ -3,6 +3,7 @@ package com.example.bank.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RequestTransferDto {
+
     @JsonProperty("card_id_to")
     private long cardIdTo;
 

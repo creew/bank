@@ -1,6 +1,10 @@
 package com.example.bank.dto;
 
-public class CredentialsDto {
+import java.io.Serializable;
+
+public class CredentialsDto implements Serializable {
+
+    private static final long serialVersionUID = 5423052010016531011L;
 
     private String username;
 

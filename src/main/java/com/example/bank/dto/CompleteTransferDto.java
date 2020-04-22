@@ -1,6 +1,11 @@
 package com.example.bank.dto;
 
-public class CompleteTransferDto {
+import java.io.Serializable;
+
+public class CompleteTransferDto implements Serializable {
+
+    private static final long serialVersionUID = 7417436578307970966L;
+
     private String token;
 
     public String getToken() {

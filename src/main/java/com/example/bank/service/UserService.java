@@ -31,7 +31,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findUserByLogin(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
@@ -51,11 +51,13 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public AuthorizationToken createAuthorizationToken(User user) {
-        if(user.getAuthorizationToken() == null || user.getAuthorizationToken().hasExpired()) {
-            user.setAuthorizationToken(new AuthorizationToken(user));
+        AuthorizationToken token = user.getAuthorizationToken();
+        if (token == null || user.getAuthorizationToken().hasExpired()) {
+            token = new AuthorizationToken();
+            user.setAuthorizationToken(token);
             userRepository.save(user);
         }
-        return user.getAuthorizationToken();
+        return token;
     }
 
     @Transactional

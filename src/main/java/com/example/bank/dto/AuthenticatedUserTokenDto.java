@@ -1,6 +1,10 @@
 package com.example.bank.dto;
 
-public class AuthenticatedUserTokenDto {
+import java.io.Serializable;
+
+public class AuthenticatedUserTokenDto implements Serializable {
+
+    private static final long serialVersionUID = 1954787934193588147L;
 
     private String userId;
 

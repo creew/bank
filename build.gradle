@@ -20,8 +20,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    compile group: 'org.modelmapper', name: 'modelmapper', version: '2.3.7'
-
     compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
 
     runtimeOnly 'org.postgresql:postgresql'

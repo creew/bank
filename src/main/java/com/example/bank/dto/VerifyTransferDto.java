@@ -1,6 +1,10 @@
 package com.example.bank.dto;
 
-public class VerifyTransferDto {
+import java.io.Serializable;
+
+public class VerifyTransferDto implements Serializable {
+
+    private static final long serialVersionUID = 3410991059459458849L;
 
     private String principal;
 
