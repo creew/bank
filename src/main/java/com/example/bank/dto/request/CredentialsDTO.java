@@ -1,13 +1,16 @@
-package com.example.bank.dto;
+package com.example.bank.dto.request;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 public class CredentialsDTO implements Serializable {
 
     private static final long serialVersionUID = 5423052010016531011L;
 
+    @NotNull
     private String username;
 
+    @NotNull
     private String password;
 
     public String getUsername() {

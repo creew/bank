@@ -1,8 +1,8 @@
 package com.example.bank.service;
 
 import com.example.bank.dao.UserRepository;
-import com.example.bank.dto.AuthenticatedUserTokenDTO;
-import com.example.bank.dto.UserRegisterDTO;
+import com.example.bank.dto.response.AuthenticatedUserTokenDTO;
+import com.example.bank.dto.request.UserRegisterDTO;
 import com.example.bank.entity.AuthorizationToken;
 import com.example.bank.entity.User;
 import com.example.bank.exception.DuplicateEntryException;

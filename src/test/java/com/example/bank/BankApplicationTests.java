@@ -1,6 +1,9 @@
 package com.example.bank;
 
 import com.example.bank.dto.*;
+import com.example.bank.dto.request.*;
+import com.example.bank.dto.response.ErrorRequestDTO;
+import com.example.bank.dto.response.VerifyTransferDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,7 +65,7 @@ class BankApplicationTests {
 
     @BeforeEach
     void beforeEach() {
-        registeredUser = registerUser();
+        registeredUser = registerRandomUser();
         assertEquals(HttpStatus.CREATED, registeredUser.responseEntity.getStatusCode());
     }
 
@@ -83,18 +86,29 @@ class BankApplicationTests {
             this.password = Integer.toString((int)(Math.random() * 1_000_000_000));
         }
 
+        public RegisterUser(String login, String password) {
+            this.login = login;
+            this.password = password;
+        }
+
         @Override
         public void close() {
             deleteUser(bearer);
         }
     }
 
-    private RegisterUser registerUser () {
-        RegisterUser registerUser = new RegisterUser();
+    private RegisterUser registerNewUser(UserRegisterDTO userRegisterDTO) {
+        RegisterUser registerUser = new RegisterUser(userRegisterDTO.getLogin(), userRegisterDTO.getPassword());
         registerUser.responseEntity = restTemplate.postForEntity(getContextPath() + "/auth/signup",
-                new UserRegisterDTO(registerUser.login, registerUser.password, "12", "12", "12", registerUser.password), JsonNode.class);
+                userRegisterDTO, JsonNode.class);
         registerUser.bearer = registerUser.responseEntity.getBody().get("bearer").asText();
         return registerUser;
+    }
+
+    private RegisterUser registerRandomUser() {
+        RegisterUser regUser = new RegisterUser();
+        return registerNewUser(new UserRegisterDTO(regUser.login, regUser.password,
+                "12", "12", "12", regUser.password));
     }
 
     static HttpHeaders createHeaders(String bearer){
@@ -227,7 +241,7 @@ class BankApplicationTests {
 
     @Test
     void testCreateDepositTransfer() {
-        RegisterUser user2 = registerUser();
+        RegisterUser user2 = registerRandomUser();
         CardDTO cardFrom = sendCreateCardRequest(registeredUser.bearer);
         CardDTO cardTo = sendCreateCardRequest(user2.bearer);
 
@@ -249,7 +263,7 @@ class BankApplicationTests {
 
     @Test
     void testCreateDepositTransferWithNegativeAmount() {
-        try (RegisterUser user2 = registerUser()) {
+        try (RegisterUser user2 = registerRandomUser()) {
             CardDTO cardFrom = sendCreateCardRequest(registeredUser.bearer);
             CardDTO cardTo = sendCreateCardRequest(user2.bearer);
 
@@ -266,7 +280,7 @@ class BankApplicationTests {
 
     @Test
     void testCreateDepositTransferWithEqualBalanceAmount() {
-        try (RegisterUser user2 = registerUser()) {
+        try (RegisterUser user2 = registerRandomUser()) {
             CardDTO cardFrom = sendCreateCardRequest(registeredUser.bearer);
             CardDTO cardTo = sendCreateCardRequest(user2.bearer);
 
@@ -282,7 +296,7 @@ class BankApplicationTests {
 
     @Test
     void testCreateDepositTransferWithLessThanBalanceAmount() {
-        try (RegisterUser user2 = registerUser()) {
+        try (RegisterUser user2 = registerRandomUser()) {
             CardDTO cardFrom = sendCreateCardRequest(registeredUser.bearer);
             CardDTO cardTo = sendCreateCardRequest(user2.bearer);
 
@@ -298,7 +312,7 @@ class BankApplicationTests {
 
     @Test
     void testCreateDepositDoubleWithdraw() {
-        try (RegisterUser user2 = registerUser()) {
+        try (RegisterUser user2 = registerRandomUser()) {
             CardDTO cardFrom = sendCreateCardRequest(registeredUser.bearer);
             CardDTO cardTo = sendCreateCardRequest(user2.bearer);
 
@@ -320,7 +334,7 @@ class BankApplicationTests {
 
     @Test
     void testCreateDepositDoubleRequest() {
-        try (RegisterUser user2 = registerUser()) {
+        try (RegisterUser user2 = registerRandomUser()) {
             CardDTO cardFrom = sendCreateCardRequest(registeredUser.bearer);
             CardDTO cardTo = sendCreateCardRequest(user2.bearer);
 
@@ -335,11 +349,20 @@ class BankApplicationTests {
                     300, HttpStatus.OK, registeredUser.bearer);
             VerifyTransferDTO verifyTransferDTO2 = parseJson(s, VerifyTransferDTO.class);
 
-            sendCompleteTransfer(verifyTransferDTO.getToken(), HttpStatus.BAD_REQUEST, registeredUser.bearer);
+            sendCompleteTransfer(verifyTransferDTO.getToken(), HttpStatus.OK, registeredUser.bearer);
             s = sendCompleteTransfer(verifyTransferDTO2.getToken(), HttpStatus.OK, registeredUser.bearer);
             CardDTO returnedCard = parseJson(s, CardDTO.class);
-            assertEquals(934, returnedCard.getAmount());
+            assertEquals(734, returnedCard.getAmount());
         }
+    }
+
+    @Test
+    void createUserWithNullValues() {
+        UserRegisterDTO userRegisterDTO = new UserRegisterDTO("11", "22", "22", null, "22", "22");
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(getContextPath() + "/auth/signup",
+                userRegisterDTO, String.class);
+        System.out.println(responseEntity.getBody());
+        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
     }
 }
 

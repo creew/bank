@@ -1,6 +1,6 @@
 package com.example.bank.service.authentication;
 
-import com.example.bank.dto.AuthenticatedUserTokenDTO;
+import com.example.bank.dto.response.AuthenticatedUserTokenDTO;
 import com.example.bank.dto.UserDTO;
 import com.example.bank.entity.AuthorizationToken;
 import com.example.bank.entity.User;

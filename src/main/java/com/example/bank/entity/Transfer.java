@@ -6,8 +6,8 @@ import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name = "verification_token")
-public class VerificationToken implements Serializable {
+@Table(name = "transfers")
+public class Transfer implements Serializable {
 
     private static final Integer DEFAULT_TIME_TO_LIVE_IN_SECONDS = (60 * 5);
 
@@ -28,6 +28,9 @@ public class VerificationToken implements Serializable {
     @Column(name = "time_expiration")
     private Date timeExpiration;
 
+    @Column(name = "time_executed")
+    private Date timeExecuted;
+
     @Column(name = "active")
     private Boolean active;
 
@@ -39,10 +42,10 @@ public class VerificationToken implements Serializable {
     @JoinColumn(name = "fk_card_to_id")
     private Card cardTo;
 
-    public VerificationToken() {
+    public Transfer() {
     }
 
-    public VerificationToken(Card cardFrom, Integer timeToLiveInSeconds) {
+    public Transfer(Card cardFrom, Integer timeToLiveInSeconds) {
         this.token = UUID.randomUUID().toString();
         this.cardFrom = cardFrom;
         this.timeCreated = new Date();
@@ -50,8 +53,14 @@ public class VerificationToken implements Serializable {
         this.timeExpiration = new Date(System.currentTimeMillis() + (timeToLiveInSeconds * 1000L));
     }
 
-    public VerificationToken(Card cardFrom) {
+    public Transfer(Card cardFrom) {
         this(cardFrom, DEFAULT_TIME_TO_LIVE_IN_SECONDS);
+    }
+
+    public Transfer(Card cardFrom, Card cardTo, Long amount) {
+        this(cardFrom);
+        this.amount = amount;
+        this.cardTo = cardTo;
     }
 
     public boolean hasExpired() {
@@ -88,6 +97,14 @@ public class VerificationToken implements Serializable {
 
     public void setTimeExpiration(Date timeExpiration) {
         this.timeExpiration = timeExpiration;
+    }
+
+    public Date getTimeExecuted() {
+        return timeExecuted;
+    }
+
+    public void setTimeExecuted(Date timeExecuted) {
+        this.timeExecuted = timeExecuted;
     }
 
     public Card getCardFrom() {

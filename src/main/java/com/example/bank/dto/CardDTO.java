@@ -2,29 +2,34 @@ package com.example.bank.dto;
 
 import com.example.bank.entity.Card;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.io.Serializable;
 
 public class CardDTO implements Serializable {
 
     private static final long serialVersionUID = -1986157594950218606L;
 
-    private long cardId;
+    @NotNull
+    private Long cardId;
 
-    private long amount;
+    @NotNull
+    @Positive
+    private Long amount;
 
-    public long getCardId() {
+    public Long getCardId() {
         return cardId;
     }
 
-    public long getAmount() {
+    public Long getAmount() {
         return amount;
     }
 
-    public void setCardId(long cardId) {
+    public void setCardId(Long cardId) {
         this.cardId = cardId;
     }
 
-    public void setAmount(long amount) {
+    public void setAmount(Long amount) {
         this.amount = amount;
     }
 

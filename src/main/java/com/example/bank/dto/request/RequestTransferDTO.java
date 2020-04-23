@@ -1,8 +1,12 @@
-package com.example.bank.dto;
+package com.example.bank.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class RequestTransferDTO {
+import java.io.Serializable;
+
+public class RequestTransferDTO implements Serializable {
+
+    private static final long serialVersionUID = -6416482809059557108L;
 
     @JsonProperty("card_id_to")
     private long cardIdTo;

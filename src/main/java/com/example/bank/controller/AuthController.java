@@ -1,7 +1,7 @@
 package com.example.bank.controller;
 
-import com.example.bank.dto.CredentialsDTO;
-import com.example.bank.dto.UserRegisterDTO;
+import com.example.bank.dto.request.CredentialsDTO;
+import com.example.bank.dto.request.UserRegisterDTO;
 import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.WrongPasswordException;
 import com.example.bank.service.authentication.UserAuthenticationService;
@@ -9,6 +9,8 @@ import com.example.bank.service.UsersService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.Validator;
 import java.util.Collections;
 import java.util.Map;
 
@@ -20,9 +22,14 @@ public class AuthController {
 
     private UserAuthenticationService authenticationService;
 
-    public AuthController(UsersService usersService, UserAuthenticationService authenticationService) {
+    private Validator validator;
+
+    public AuthController(UsersService usersService,
+                          UserAuthenticationService authenticationService,
+                          Validator validator) {
         this.usersService = usersService;
         this.authenticationService = authenticationService;
+        this.validator = validator;
     }
 
     @PostMapping("/signin")
@@ -35,7 +42,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public Map<String, String> registerUser(@RequestBody UserRegisterDTO userRegisterDto) {
+    public Map<String, String> registerUser(@RequestBody @Valid UserRegisterDTO userRegisterDto) {
         if (!userRegisterDto.getPassword().equals(userRegisterDto.getPasswordConfirm())){
             throw new IllegalArgumentsPassed("Пароли не совпадают");
         }

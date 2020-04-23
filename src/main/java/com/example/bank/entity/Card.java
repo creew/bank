@@ -18,11 +18,8 @@ public class Card implements Serializable {
     private Long amount;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_user_id",  nullable = false)
+    @JoinColumn(name = "FK_USER_ID",  nullable = false)
     private User user;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "cardFrom", cascade = CascadeType.ALL)
-    private VerificationToken verificationToken;
 
     public Card() {
     }
@@ -56,11 +53,4 @@ public class Card implements Serializable {
         this.user = user;
     }
 
-    public VerificationToken getVerificationToken() {
-        return verificationToken;
-    }
-
-    public void setVerificationToken(VerificationToken verificationToken) {
-        this.verificationToken = verificationToken;
-    }
 }

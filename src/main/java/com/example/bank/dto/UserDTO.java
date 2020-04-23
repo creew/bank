@@ -4,10 +4,13 @@ import com.example.bank.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 
-public class UserDTO implements UserDetails {
+public class UserDTO implements UserDetails, Serializable {
+
+    private static final long serialVersionUID = -1518990577336335727L;
 
     private long id;
 

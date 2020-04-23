@@ -2,9 +2,7 @@ package com.example.bank.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -35,9 +33,6 @@ public class User implements Serializable {
 
     @Column(name = "PATRONYMIC", nullable = false)
     private String patronymic;
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Card> cardSet = new HashSet<>();
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private AuthorizationToken authorizationToken;
@@ -88,10 +83,6 @@ public class User implements Serializable {
 
     public void setPatronymic(String patronymic) {
         this.patronymic = patronymic;
-    }
-
-    public Set<Card> getCardSet() {
-        return cardSet;
     }
 
     public AuthorizationToken getAuthorizationToken() {

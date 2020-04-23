@@ -1,7 +1,7 @@
 package com.example.bank.controller;
 
 import com.example.bank.dto.CardDTO;
-import com.example.bank.dto.DepositCardDTO;
+import com.example.bank.dto.request.DepositCardDTO;
 import com.example.bank.dto.UserDTO;
 import com.example.bank.entity.Card;
 import com.example.bank.entity.User;
@@ -14,7 +14,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/cards")
@@ -29,15 +28,12 @@ public class CardsController {
         this.usersService = usersService;
     }
 
-    @GetMapping("")
+    @GetMapping
     public List<CardDTO> getAllCards(@AuthenticationPrincipal UserDTO user) {
-        User fromBase = usersService.getUserById(user.getId());
-        return fromBase.getCardSet().stream()
-                .map(CardDTO::fromCard)
-                .collect(Collectors.toList());
+        return cardsService.getAllUserCard(user.getId());
     }
 
-    @PutMapping("")
+    @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CardDTO createNewCard(@AuthenticationPrincipal UserDTO user) {
         User fromBase = usersService.getUserById(user.getId());

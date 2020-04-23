@@ -1,4 +1,4 @@
-package com.example.bank.dto;
+package com.example.bank.dto.response;
 
 import java.util.Date;
 
@@ -13,9 +13,6 @@ public class ErrorRequestDTO {
     private String message;
 
     private String path;
-
-    public ErrorRequestDTO() {
-    }
 
     public Date getTimestamp() {
         return timestamp;

@@ -1,31 +1,32 @@
 package com.example.bank.service;
 
 import com.example.bank.dao.CardRepository;
-import com.example.bank.dao.VerificationTokenRepository;
 import com.example.bank.dto.CardDTO;
-import com.example.bank.dto.CompleteTransferDTO;
-import com.example.bank.dto.VerifyTransferDTO;
+import com.example.bank.dto.request.CompleteTransferDTO;
+import com.example.bank.dto.response.VerifyTransferDTO;
 import com.example.bank.entity.Card;
+import com.example.bank.entity.Transfer;
 import com.example.bank.entity.User;
-import com.example.bank.entity.VerificationToken;
 import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.IllegalCardIdPassed;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CardsService {
 
     private final CardRepository cardRepository;
 
-    private final VerificationTokenRepository verificationTokenRepository;
+    private final TransfersService transfersService;
 
     public CardsService(CardRepository cardRepository,
-                        VerificationTokenRepository verificationTokenRepository) {
+                        TransfersService transfersService) {
         this.cardRepository = cardRepository;
-        this.verificationTokenRepository = verificationTokenRepository;
+        this.transfersService = transfersService;
     }
 
     @Transactional
@@ -50,38 +51,27 @@ public class CardsService {
         Card cardTo = cardRepository.getOne(cardIdTo);
         if (userCard.getAmount() < amount)
             throw new IllegalArgumentsPassed("No funds available");
-        verificationTokenRepository.deletePreviousTokens(cardIdFrom);
-        VerificationToken verificationToken = new VerificationToken(userCard);
-        verificationToken.setAmount(amount);
-        verificationToken.setCardTo(cardTo);
-        userCard.setVerificationToken(verificationToken);
-        cardRepository.saveAndFlush(userCard);
-        return new VerifyTransferDTO(cardTo.getUser().getPrincipal(), amount, verificationToken.getToken());
+        Transfer transfer = transfersService.createNewTransfer(userCard, cardTo, amount);
+        return new VerifyTransferDTO(cardTo.getUser().getPrincipal(), amount, transfer.getToken());
     }
 
     @Transactional
     public CardDTO completeTransfer(long userFromId, CompleteTransferDTO completeTransferDto) {
         String token = completeTransferDto.getToken();
-        VerificationToken verificationToken = verificationTokenRepository
-                .findVerificationTokenByToken(token);
-        if (verificationToken == null) {
-            throw new IllegalArgumentsPassed("Token not found");
-        }
-        if (!verificationToken.isActive() || verificationToken.hasExpired())
-            throw new IllegalArgumentsPassed("Token expired");
-        Card cardFrom = verificationToken.getCardFrom();
-        Card cardTo = verificationToken.getCardTo();
+        Transfer transfer = transfersService.findTransferByToken(token).orElseThrow(
+                () -> new IllegalArgumentsPassed("Token not exist or expired"));
+        Card cardFrom = transfer.getCardFrom();
+        Card cardTo = transfer.getCardTo();
         if (!cardFrom.getUser().getUserId().equals(userFromId))
             throw new IllegalArgumentsPassed("Card is not your");
-        verificationToken.setActive(false);
-        verificationTokenRepository.saveAndFlush(verificationToken);
-        Long amount = verificationToken.getAmount();
+        Long amount = transfer.getAmount();
         cardFrom.setAmount(cardFrom.getAmount() - amount);
         cardTo.setAmount(cardTo.getAmount() + amount);
         Card updatedFrom = cardRepository.save(cardFrom);
         if (updatedFrom.getAmount() < 0)
             throw new IllegalArgumentsPassed("Not enough money");
         cardRepository.saveAndFlush(cardTo);
+        transfersService.setTransferComplete(transfer);
         return CardDTO.fromCard(updatedFrom);
     }
 
@@ -93,6 +83,12 @@ public class CardsService {
         return Optional.empty();
     }
 
+    @Transactional(readOnly = true)
+    public List<CardDTO> getAllUserCard(long userId) {
+        return cardRepository.findAllByUser_UserId(userId).stream()
+                .map(CardDTO::fromCard)
+                .collect(Collectors.toList());
+    }
 
     public void deleteCardById(Long cardId) {
         cardRepository.deleteById(cardId);

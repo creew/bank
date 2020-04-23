@@ -1,6 +1,9 @@
 package com.example.bank.controller;
 
 import com.example.bank.dto.*;
+import com.example.bank.dto.request.CompleteTransferDTO;
+import com.example.bank.dto.request.RequestTransferDTO;
+import com.example.bank.dto.response.VerifyTransferDTO;
 import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.service.CardsService;
 import org.springframework.http.HttpStatus;
