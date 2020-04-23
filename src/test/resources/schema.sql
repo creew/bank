@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS users
 (
-    id         INT          SERIAL,
+    id         SERIAL,
     login      VARCHAR(50)  NOT NULL,
     password   VARCHAR(255) NOT NULL,
     first_name VARCHAR(50)  NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users
 
 CREATE TABLE IF NOT EXISTS cards
 (
-    id         INT     SERIAL,
+    id         SERIAL,
     fk_user_id INTEGER NOT NULL,
     amount     BIGINT  NOT NULL,
     PRIMARY KEY (id),
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS cards
 
 CREATE TABLE IF NOT EXISTS authorization_token
 (
-    id              INT       SERIAL,
+    id              SERIAL,
     fk_user_id      INTEGER   NOT NULL,
     token           varchar(36),
     time_created    timestamp not null,
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS authorization_token
 
 CREATE TABLE IF NOT EXISTS transfers
 (
-    id              INT       SERIAL,
+    id              SERIAL,
     amount          BIGINT    NOT NULL,
     fk_card_to_id   INTEGER   NOT NULL,
     fk_card_from_id INTEGER   NOT NULL,
