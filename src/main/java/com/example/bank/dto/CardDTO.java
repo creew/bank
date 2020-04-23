@@ -14,7 +14,6 @@ public class CardDTO implements Serializable {
     private Long cardId;
 
     @NotNull
-    @Positive
     private Long amount;
 
     public Long getCardId() {
@@ -38,5 +37,13 @@ public class CardDTO implements Serializable {
         cardDto.cardId = card.getCardId();
         cardDto.amount = card.getAmount();
         return cardDto;
+    }
+
+    @Override
+    public String toString() {
+        return "CardDTO{" +
+                "cardId=" + cardId +
+                ", amount=" + amount +
+                '}';
     }
 }

@@ -34,7 +34,7 @@ public class UserDTO implements UserDetails, Serializable {
         this.password = password;
     }
 
-    public static UserDTO ofUser(User user) {
+    public static UserDTO fromUser(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.id = user.getUserId();
         return userDTO;

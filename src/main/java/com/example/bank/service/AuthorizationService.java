@@ -23,7 +23,7 @@ public class AuthorizationService {
     public Optional<UserDTO> getUserFromAuthorizationToken(String token) {
         AuthorizationToken authorizationToken = authorizationTokenRepository.findAuthorizationTokenByToken(token);
         if (authorizationToken != null && !authorizationToken.hasExpired()) {
-            return Optional.of(UserDTO.ofUser(authorizationToken.getUser()));
+            return Optional.of(UserDTO.fromUser(authorizationToken.getUser()));
         }
         return Optional.empty();
     }

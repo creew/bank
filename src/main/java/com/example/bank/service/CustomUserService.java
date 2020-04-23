@@ -14,6 +14,6 @@ public class CustomUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return usersService.findUserByLogin(username).map(UserDTO::ofUser).orElse(null);
+        return usersService.findUserByLogin(username).map(UserDTO::fromUser).orElse(null);
     }
 }

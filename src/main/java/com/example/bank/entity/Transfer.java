@@ -31,8 +31,8 @@ public class Transfer implements Serializable {
     @Column(name = "time_executed")
     private Date timeExecuted;
 
-    @Column(name = "active")
-    private Boolean active;
+    @Column(name = "executed")
+    private Boolean executed;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_card_from_id")
@@ -49,7 +49,7 @@ public class Transfer implements Serializable {
         this.token = UUID.randomUUID().toString();
         this.cardFrom = cardFrom;
         this.timeCreated = new Date();
-        this.active = true;
+        this.executed = false;
         this.timeExpiration = new Date(System.currentTimeMillis() + (timeToLiveInSeconds * 1000L));
     }
 
@@ -123,11 +123,11 @@ public class Transfer implements Serializable {
         this.cardTo = cardTo;
     }
 
-    public boolean isActive() {
-        return active;
+    public boolean isExecuted() {
+        return executed;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setExecuted(boolean active) {
+        this.executed = active;
     }
 }
