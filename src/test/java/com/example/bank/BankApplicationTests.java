@@ -1,6 +1,6 @@
 package com.example.bank;
 
-import com.example.bank.dto.*;
+import com.example.bank.dto.CardDTO;
 import com.example.bank.dto.request.*;
 import com.example.bank.dto.response.ErrorRequestDTO;
 import com.example.bank.dto.response.VerifyTransferDTO;
@@ -24,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -55,12 +56,12 @@ class BankApplicationTests {
 
     public static class MyErrorHandler implements ResponseErrorHandler {
         @Override
-        public boolean hasError(ClientHttpResponse response) throws IOException {
+        public boolean hasError(ClientHttpResponse response) {
             return false;
         }
 
         @Override
-        public void handleError(ClientHttpResponse response) throws IOException {
+        public void handleError(ClientHttpResponse response) {
 
         }
     }
@@ -103,7 +104,7 @@ class BankApplicationTests {
         RegisterUser registerUser = new RegisterUser(userRegisterDTO.getLogin(), userRegisterDTO.getPassword());
         registerUser.responseEntity = restTemplate.postForEntity(getContextPath() + "/auth/signup",
                 userRegisterDTO, JsonNode.class);
-        registerUser.bearer = registerUser.responseEntity.getBody().get("bearer").asText();
+        registerUser.bearer = Objects.requireNonNull(registerUser.responseEntity.getBody()).get("bearer").asText();
         return registerUser;
     }
 

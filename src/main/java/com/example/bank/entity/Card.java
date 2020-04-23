@@ -11,7 +11,7 @@ public class Card implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CARD_ID")
+    @Column(name = "id")
     private Long cardId;
 
     @Column(name="AMOUNT", nullable = false)
