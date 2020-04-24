@@ -6,6 +6,7 @@ import com.example.bank.dto.request.CompleteTransferDTO;
 import com.example.bank.dto.request.RequestTransferDTO;
 import com.example.bank.dto.response.TransferInfoDTO;
 import com.example.bank.dto.response.VerifyTransferDTO;
+import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.service.CardsService;
 import com.example.bank.service.TransfersService;
 import org.springframework.http.HttpStatus;
@@ -46,8 +47,25 @@ public class TransferController {
                                                   @RequestParam(value = "from_amount", required = false) Long fromAmount,
                                                   @RequestParam(value = "to_amount", required = false) Long toAmount,
                                                   @RequestParam(value = "to_user", required = false) Long userId) {
-        Date fromDate = new Date(fromDateLong == null ? 0 : fromDateLong);
-        Date toDate = new Date(toDateLong == null ? Long.MAX_VALUE : toDateLong);
+        Date curDate = new Date();
+        Date fromDate;
+        Date toDate;
+        if (fromDateLong == null) {
+            fromDate = new Date(0);
+        } else {
+            if (fromDateLong > curDate.getTime()) {
+                throw new IllegalArgumentsPassed("Wrong from_date");
+            }
+            fromDate = new Date(fromDateLong);
+        }
+        if (toDateLong == null) {
+            toDate = curDate;
+        } else {
+            if (toDateLong > curDate.getTime()) {
+                throw new IllegalArgumentsPassed("Wrong to_date");
+            }
+            toDate = new Date(toDateLong);
+        }
         if (fromAmount == null)
             fromAmount = 0L;
         if (toAmount == null)

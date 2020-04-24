@@ -50,4 +50,13 @@ public class TransferInfoDTO implements Serializable {
         transferInfoDTO.credentialsTo = transfer.getCardTo().getUser().getPrincipal();
         return transferInfoDTO;
     }
+
+    @Override
+    public String toString() {
+        return "TransferInfoDTO{" +
+                "executedDate=" + executedDate +
+                ", amount=" + amount +
+                ", credentialsTo='" + credentialsTo + '\'' +
+                '}';
+    }
 }

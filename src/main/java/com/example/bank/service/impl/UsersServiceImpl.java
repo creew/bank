@@ -44,9 +44,9 @@ public class UsersServiceImpl implements UsersService {
         return newUser;
     }
 
-    AuthenticatedUserTokenDTO createAuthorizationToken(User user) {
+    private AuthenticatedUserTokenDTO createAuthorizationToken(User user) {
         AuthorizationToken token = user.getAuthorizationToken();
-        if (token == null || user.getAuthorizationToken().hasExpired()) {
+        if (token == null || token.hasExpired()) {
             token = new AuthorizationToken(user);
             user.setAuthorizationToken(token);
             userRepository.saveAndFlush(user);
