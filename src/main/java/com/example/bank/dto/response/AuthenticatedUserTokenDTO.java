@@ -1,5 +1,7 @@
 package com.example.bank.dto.response;
 
+import com.example.bank.entity.AuthorizationToken;
+
 import java.io.Serializable;
 
 public class AuthenticatedUserTokenDTO implements Serializable {
@@ -13,6 +15,12 @@ public class AuthenticatedUserTokenDTO implements Serializable {
 
     public AuthenticatedUserTokenDTO(String token) {
         this.token = token;
+    }
+
+    public static AuthenticatedUserTokenDTO fromAuthorizationToken(AuthorizationToken token) {
+        AuthenticatedUserTokenDTO authenticatedUserTokenDTO = new AuthenticatedUserTokenDTO();
+        authenticatedUserTokenDTO.token = token.getToken();
+        return authenticatedUserTokenDTO;
     }
 
     public String getToken() {

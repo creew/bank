@@ -1,9 +1,8 @@
 package com.example.bank.controller;
 
 import com.example.bank.dto.CardDTO;
-import com.example.bank.dto.request.DepositCardDTO;
 import com.example.bank.dto.UserDTO;
-import com.example.bank.entity.Card;
+import com.example.bank.dto.request.DepositCardDTO;
 import com.example.bank.entity.User;
 import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.IllegalCardIdPassed;
@@ -37,16 +36,13 @@ public class CardsController {
     @ResponseStatus(HttpStatus.CREATED)
     public CardDTO createNewCard(@AuthenticationPrincipal UserDTO user) {
         User fromBase = usersService.getUserById(user.getId());
-        Card card = cardsService.createCard(fromBase);
-        return CardDTO.fromCard(card);
+        return cardsService.createCard(fromBase);
     }
 
     @GetMapping("/{cardId}")
     public CardDTO getOneCards(@AuthenticationPrincipal final UserDTO user,
                                @PathVariable Long cardId) {
-        User fromBase = usersService.getUserById(user.getId());
-        Card card = cardsService.checkIsUsersCard(fromBase, cardId).orElseThrow(IllegalCardIdPassed::new);
-        return CardDTO.fromCard(card);
+        return cardsService.checkIsUsersCard(user.getId(), cardId).orElseThrow(IllegalCardIdPassed::new);
     }
 
     @PostMapping("/{cardId}")
@@ -56,17 +52,15 @@ public class CardsController {
         if (depositCardDTO.getAmount() <= 0) {
             throw new IllegalArgumentsPassed("amount less than or equal zero");
         }
-        User fromBase = usersService.getUserById(user.getId());
-        Card card = cardsService.checkIsUsersCard(fromBase, cardId).orElseThrow(IllegalCardIdPassed::new);
-        return CardDTO.fromCard(cardsService.deposit(card, depositCardDTO.getAmount()));
+        CardDTO card = cardsService.checkIsUsersCard(user.getId(), cardId).orElseThrow(IllegalCardIdPassed::new);
+        return cardsService.deposit(card.getCardId(), depositCardDTO.getAmount());
     }
 
     @DeleteMapping("/{cardId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOneCards(@AuthenticationPrincipal final UserDTO user,
                                @PathVariable Long cardId) {
-        User fromBase = usersService.getUserById(user.getId());
-        Card card = cardsService.checkIsUsersCard(fromBase, cardId).orElseThrow(IllegalCardIdPassed::new);
-        cardsService.deleteCard(card);
+        CardDTO card = cardsService.checkIsUsersCard(user.getId(), cardId).orElseThrow(IllegalCardIdPassed::new);
+        cardsService.deleteCardById(card.getCardId());
     }
 }

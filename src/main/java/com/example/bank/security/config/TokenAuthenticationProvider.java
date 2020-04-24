@@ -1,7 +1,7 @@
 package com.example.bank.security.config;
 
 import com.example.bank.dto.UserDTO;
-import com.example.bank.service.authentication.UserAuthenticationService;
+import com.example.bank.service.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
@@ -12,8 +12,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class TokenAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
-    @Autowired
-    UserAuthenticationService auth;
+    private final UserAuthenticationService auth;
+
+    public TokenAuthenticationProvider(UserAuthenticationService auth) {
+        this.auth = auth;
+    }
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) {

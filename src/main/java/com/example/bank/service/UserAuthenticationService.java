@@ -1,7 +1,6 @@
-package com.example.bank.service.authentication;
+package com.example.bank.service;
 
 import com.example.bank.dto.UserDTO;
-import com.example.bank.entity.User;
 
 import java.util.Optional;
 
@@ -11,6 +10,6 @@ public interface UserAuthenticationService {
 
     Optional<UserDTO> findByToken(String token);
 
-    void logout(User user);
+    void logout(UserDTO user);
 
 }

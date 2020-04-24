@@ -1,16 +1,19 @@
-package com.example.bank.service;
+package com.example.bank.service.impl;
 
 import com.example.bank.dto.UserDTO;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.bank.service.UsersService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CustomUserService implements UserDetailsService {
+public class CustomUserServiceImpl implements UserDetailsService {
 
-    @Autowired
-    private UsersService usersService;
+    private final UsersService usersService;
+
+    public CustomUserServiceImpl(UsersService usersService) {
+        this.usersService = usersService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) {

@@ -5,7 +5,7 @@ import com.example.bank.dto.request.UserRegisterDTO;
 import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.WrongPasswordException;
 import com.example.bank.service.UsersService;
-import com.example.bank.service.authentication.UserAuthenticationService;
+import com.example.bank.service.UserAuthenticationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
