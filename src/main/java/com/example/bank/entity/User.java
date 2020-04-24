@@ -23,7 +23,7 @@ public class User implements Serializable {
     private String login;
 
     @Column(name = "PASSWORD", nullable = false)
-    private String password;
+    private byte[] password;
 
     @Column(name = "FIRST_NAME", nullable = false)
     private String firstName;
@@ -53,11 +53,11 @@ public class User implements Serializable {
         this.login = login;
     }
 
-    public String getPassword() {
+    public byte[] getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(byte[] password) {
         this.password = password;
     }
 

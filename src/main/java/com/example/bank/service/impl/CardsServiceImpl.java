@@ -10,10 +10,12 @@ import com.example.bank.entity.User;
 import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.IllegalCardIdPassed;
 import com.example.bank.service.CardsService;
+import com.example.bank.service.TransactionsService;
 import com.example.bank.service.TransfersService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,10 +27,13 @@ public class CardsServiceImpl implements CardsService {
 
     private final TransfersService transfersService;
 
+    private final TransactionsService transactionsService;
+
     public CardsServiceImpl(CardRepository cardRepository,
-                            TransfersService transfersService) {
+                            TransfersService transfersService, TransactionsService transactionsService) {
         this.cardRepository = cardRepository;
         this.transfersService = transfersService;
+        this.transactionsService = transactionsService;
     }
 
     @Override
@@ -36,6 +41,7 @@ public class CardsServiceImpl implements CardsService {
     public CardDTO deposit(long cardId, Long amount) {
         Card card = cardRepository.getOne(cardId);
         card.setAmount(card.getAmount() + amount);
+        transactionsService.saveTransaction(null, card, amount, new Date());
         return CardDTO.fromCard(cardRepository.saveAndFlush(card));
     }
 
@@ -78,6 +84,7 @@ public class CardsServiceImpl implements CardsService {
             throw new IllegalArgumentsPassed("Not enough money");
         cardRepository.saveAndFlush(cardTo);
         transfersService.setTransferComplete(transfer);
+        transactionsService.saveTransaction(cardFrom, cardTo, amount, new Date());
         return CardDTO.fromCard(updatedFrom);
     }
 

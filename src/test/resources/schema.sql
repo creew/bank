@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS users
 (
     id         SERIAL,
     login      VARCHAR(50)  NOT NULL,
-    password   VARCHAR(255) NOT NULL,
+    password   BYTEA        NOT NULL,
     first_name VARCHAR(50)  NOT NULL,
     last_name  VARCHAR(50)  NOT NULL,
     patronymic VARCHAR(50)  NOT NULL,
@@ -40,8 +40,19 @@ CREATE TABLE IF NOT EXISTS transfers
     executed        BOOLEAN   NOT NULL,
     time_created    TIMESTAMP NOT NULL,
     time_expiration TIMESTAMP NOT NULL,
-    time_executed   TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (fk_card_to_id) REFERENCES cards (id) ON DELETE CASCADE,
     FOREIGN KEY (fk_card_from_id) REFERENCES cards (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS transactions
+(
+    id              SERIAL,
+    amount          BIGINT    NOT NULL,
+    time_executed   TIMESTAMP NOT NULL,
+    fk_card_from_id INTEGER,
+    fk_card_to_id   INTEGER,
+    PRIMARY KEY (id),
+    FOREIGN KEY (fk_card_from_id) REFERENCES cards (id) ON DELETE SET NULL,
+    FOREIGN KEY (fk_card_to_id) REFERENCES cards (id) ON DELETE SET NULL
 );

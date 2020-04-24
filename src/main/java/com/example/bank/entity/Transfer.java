@@ -28,9 +28,6 @@ public class Transfer implements Serializable {
     @Column(name = "time_expiration")
     private Date timeExpiration;
 
-    @Column(name = "time_executed")
-    private Date timeExecuted;
-
     @Column(name = "executed")
     private Boolean executed;
 
@@ -97,14 +94,6 @@ public class Transfer implements Serializable {
 
     public void setTimeExpiration(Date timeExpiration) {
         this.timeExpiration = timeExpiration;
-    }
-
-    public Date getTimeExecuted() {
-        return timeExecuted;
-    }
-
-    public void setTimeExecuted(Date timeExecuted) {
-        this.timeExecuted = timeExecuted;
     }
 
     public Card getCardFrom() {

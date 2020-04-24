@@ -40,7 +40,7 @@ public class UsersServiceImpl implements UsersService {
         newUser.setFirstName(customer.getFirstName());
         newUser.setLastName(customer.getLastName());
         newUser.setPatronymic(customer.getPatronymic());
-        newUser.setPassword(bCryptPasswordEncoder.encode(customer.getPassword()));
+        newUser.setPassword(bCryptPasswordEncoder.encode(customer.getPassword()).getBytes());
         return newUser;
     }
 
