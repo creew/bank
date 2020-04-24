@@ -57,8 +57,7 @@ public class CardsServiceImpl implements CardsService {
         Card cardTo = cardRepository.getOne(cardIdTo);
         if (userCard.getAmount() < amount)
             throw new IllegalArgumentsPassed("No funds available");
-        Transfer transfer = transfersService.createNewTransfer(userCard, cardTo, amount);
-        return new VerifyTransferDTO(cardTo.getUser().getPrincipal(), amount, transfer.getToken());
+        return  transfersService.createNewTransfer(userCard, cardTo, amount);
     }
 
     @Override

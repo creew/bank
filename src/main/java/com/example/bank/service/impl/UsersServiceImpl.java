@@ -1,6 +1,7 @@
 package com.example.bank.service.impl;
 
 import com.example.bank.dao.UserRepository;
+import com.example.bank.dto.UserDTO;
 import com.example.bank.dto.response.AuthenticatedUserTokenDTO;
 import com.example.bank.dto.request.UserRegisterDTO;
 import com.example.bank.entity.AuthorizationToken;
@@ -33,8 +34,7 @@ public class UsersServiceImpl implements UsersService {
                 () -> new IllegalArgumentsPassed("No customer with id " + id + " found"));
     }
 
-    @Override
-    public User createNewUser(UserRegisterDTO customer) {
+    private User createNewUser(UserRegisterDTO customer) {
         User newUser = new User();
         newUser.setLogin(customer.getLogin());
         newUser.setFirstName(customer.getFirstName());
@@ -44,9 +44,7 @@ public class UsersServiceImpl implements UsersService {
         return newUser;
     }
 
-    @Override
-    @Transactional
-    public AuthenticatedUserTokenDTO createAuthorizationToken(User user) {
+    AuthenticatedUserTokenDTO createAuthorizationToken(User user) {
         AuthorizationToken token = user.getAuthorizationToken();
         if (token == null || user.getAuthorizationToken().hasExpired()) {
             token = new AuthorizationToken(user);
@@ -82,8 +80,8 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public Optional<User> findUserByLogin(String login) {
-        return Optional.of(userRepository.findUserByLogin(login));
+    public UserDTO findUserByLogin(String login) {
+        return Optional.of(userRepository.findUserByLogin(login)).map(UserDTO::fromUser).orElse(null);
     }
 
     @Override

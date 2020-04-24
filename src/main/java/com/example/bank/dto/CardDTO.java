@@ -3,7 +3,6 @@ package com.example.bank.dto;
 import com.example.bank.entity.Card;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import java.io.Serializable;
 
 public class CardDTO implements Serializable {

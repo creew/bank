@@ -1,6 +1,7 @@
 package com.example.bank.service;
 
 import com.example.bank.dto.response.TransferInfoDTO;
+import com.example.bank.dto.response.VerifyTransferDTO;
 import com.example.bank.entity.Card;
 import com.example.bank.entity.Transfer;
 
@@ -10,7 +11,7 @@ import java.util.Optional;
 
 public interface TransfersService {
 
-    Transfer createNewTransfer(Card userFrom, Card userTo, long amount);
+    VerifyTransferDTO createNewTransfer(Card userFrom, Card userTo, long amount);
 
     Optional<Transfer> findTransferByToken(String token);
 

@@ -1,6 +1,5 @@
 package com.example.bank.service.impl;
 
-import com.example.bank.dto.UserDTO;
 import com.example.bank.service.UsersService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +16,6 @@ public class CustomUserServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        return usersService.findUserByLogin(username).map(UserDTO::fromUser).orElse(null);
+        return usersService.findUserByLogin(username);
     }
 }

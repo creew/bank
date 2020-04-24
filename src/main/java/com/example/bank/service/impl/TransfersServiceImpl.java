@@ -2,8 +2,10 @@ package com.example.bank.service.impl;
 
 import com.example.bank.dao.TransferRepository;
 import com.example.bank.dto.response.TransferInfoDTO;
+import com.example.bank.dto.response.VerifyTransferDTO;
 import com.example.bank.entity.Card;
 import com.example.bank.entity.Transfer;
+import com.example.bank.service.TransfersService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +15,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class TransfersServiceImpl implements com.example.bank.service.TransfersService {
+public class TransfersServiceImpl implements TransfersService {
 
     private TransferRepository transferRepository;
 
@@ -23,10 +25,9 @@ public class TransfersServiceImpl implements com.example.bank.service.TransfersS
 
     @Override
     @Transactional
-    public Transfer createNewTransfer(Card userFrom, Card userTo, long amount) {
+    public VerifyTransferDTO createNewTransfer(Card userFrom, Card userTo, long amount) {
         Transfer transfer = new Transfer(userFrom, userTo, amount);
-        transferRepository.saveAndFlush(transfer);
-        return transfer;
+        return VerifyTransferDTO.fromTransfer(transferRepository.saveAndFlush(transfer));
     }
 
     @Override
@@ -52,7 +53,7 @@ public class TransfersServiceImpl implements com.example.bank.service.TransfersS
     @Transactional(readOnly = true)
     public List<TransferInfoDTO> getTransfersOfUser(Long userIdFrom, Long amountFrom, Long amountTo,
                                                     Date dateFrom, Date dateTo) {
-        return transferRepository.findAllByExecutedTrueAndCardFrom_CardIdAndAmountBetweenAndTimeExecutedBetween(
+        return transferRepository.fetchAllTransferByUser(
                 userIdFrom, amountFrom, amountTo, dateFrom, dateTo).stream()
                 .map(TransferInfoDTO::fromTransfer)
                 .collect(Collectors.toList());
@@ -62,7 +63,7 @@ public class TransfersServiceImpl implements com.example.bank.service.TransfersS
     @Transactional(readOnly = true)
     public List<TransferInfoDTO> getTransfersOfUserToUser(Long cardIdFrom, Long cardIdTo, Long amountFrom,
                                                           Long amountTo, Date dateFrom, Date dateTo) {
-        return transferRepository.findAllByExecutedTrueAndCardFrom_CardIdAndCardTo_CardIdAndAmountBetweenAndTimeExecutedBetween(
+        return transferRepository.fetchAllTransferByUserToUser(
                 cardIdFrom, cardIdTo, amountFrom, amountTo, dateFrom, dateTo).stream()
                 .map(TransferInfoDTO::fromTransfer)
                 .collect(Collectors.toList());

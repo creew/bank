@@ -1,5 +1,7 @@
 package com.example.bank.dto.response;
 
+import com.example.bank.entity.Transfer;
+
 import java.io.Serializable;
 
 public class VerifyTransferDTO implements Serializable {
@@ -36,13 +38,12 @@ public class VerifyTransferDTO implements Serializable {
         this.token = token;
     }
 
-    public VerifyTransferDTO() {
-    }
-
-    public VerifyTransferDTO(String principal, long amount, String token) {
-        this.principal = principal;
-        this.amount = amount;
-        this.token = token;
+    public static VerifyTransferDTO fromTransfer(Transfer transfer) {
+        VerifyTransferDTO verifyTransferDTO = new VerifyTransferDTO();
+        verifyTransferDTO.token = transfer.getToken();
+        verifyTransferDTO.amount = transfer.getAmount();
+        verifyTransferDTO.principal = transfer.getCardTo().getUser().getPrincipal();
+        return verifyTransferDTO;
     }
 }
 

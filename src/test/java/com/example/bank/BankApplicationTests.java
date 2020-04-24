@@ -11,6 +11,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BankApplicationTests {
+
+    private Logger logger = LoggerFactory.getLogger(BankApplicationTests.class);
 
     private static final String BASE_URL = "http://localhost:";
 
@@ -205,7 +209,7 @@ class BankApplicationTests {
         ResponseEntity<String> responseEntity = executeExchange("/cards", registeredUser.bearer,
                 HttpMethod.GET);
 
-        System.out.println(responseEntity.getBody());
+        logger.debug(responseEntity.getBody());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
@@ -218,7 +222,7 @@ class BankApplicationTests {
         ResponseEntity<String> responseEntity = executeExchange("/cards", registeredUser.bearer,
                 HttpMethod.GET);
         CardDTO[] cards = parseJson(responseEntity.getBody(), CardDTO[].class);
-        System.out.println(Arrays.toString(cards));
+        logger.debug(Arrays.toString(cards));
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
@@ -226,7 +230,7 @@ class BankApplicationTests {
     void testCreateNewCard() {
         ResponseEntity<String> responseEntity = executeExchange("/cards", registeredUser.bearer,
                 HttpMethod.PUT);
-        System.out.println(responseEntity.getBody());
+        logger.debug(responseEntity.getBody());
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
         CardDTO cardDTO = parseJson(responseEntity.getBody(), CardDTO.class);
         assertEquals(0, cardDTO.getAmount());
@@ -244,7 +248,7 @@ class BankApplicationTests {
         CardDTO cardDTO = sendCreateCardRequest(registeredUser.bearer);
         String s = sendDeposit(cardDTO.getCardId(), -1234, registeredUser.bearer, HttpStatus.BAD_REQUEST);
         ErrorRequestDTO errorRequestDTO = parseJson(s, ErrorRequestDTO.class);
-        System.out.println(errorRequestDTO);
+        logger.debug(errorRequestDTO.toString());
     }
 
     @Test
@@ -260,7 +264,7 @@ class BankApplicationTests {
                 100, HttpStatus.OK, registeredUser.bearer);
         VerifyTransferDTO verifyTransferDTO = parseJson(s, VerifyTransferDTO.class);
 
-        System.out.println("//////////-------" + verifyTransferDTO.getPrincipal() + " sum: "
+        logger.debug("//////////-------" + verifyTransferDTO.getPrincipal() + " sum: "
                 + verifyTransferDTO.getAmount() +  "-------////////////");
 
         sendCompleteTransfer(verifyTransferDTO.getToken(), HttpStatus.OK, registeredUser.bearer);
@@ -281,7 +285,7 @@ class BankApplicationTests {
             s = sendTransferRequest(cardFrom.getCardId(), cardTo.getCardId(),
                     -100, HttpStatus.BAD_REQUEST, registeredUser.bearer);
             ErrorRequestDTO errorRequestDTO = parseJson(s, ErrorRequestDTO.class);
-            System.out.println(errorRequestDTO.toString());
+            logger.debug(errorRequestDTO.toString());
             deleteUser(user2.bearer);
         }
     }
@@ -297,7 +301,7 @@ class BankApplicationTests {
 
             s = sendTransferRequest(cardFrom.getCardId(), cardTo.getCardId(),
                     1234, HttpStatus.OK, registeredUser.bearer);
-            System.out.println(s);
+            logger.debug(s);
             deleteUser(user2.bearer);
         }
     }
@@ -314,7 +318,7 @@ class BankApplicationTests {
             s = sendTransferRequest(cardFrom.getCardId(), cardTo.getCardId(),
                     2000, HttpStatus.BAD_REQUEST, registeredUser.bearer);
             ErrorRequestDTO errorRequestDTO = parseJson(s, ErrorRequestDTO.class);
-            System.out.println(errorRequestDTO.toString());
+            logger.debug(errorRequestDTO.toString());
         }
     }
 
@@ -335,7 +339,7 @@ class BankApplicationTests {
             s = sendCompleteTransfer(verifyTransferDTO.getToken(), HttpStatus.BAD_REQUEST, registeredUser.bearer);
 
             ErrorRequestDTO errorRequestDTO = parseJson(s, ErrorRequestDTO.class);
-            System.out.println(errorRequestDTO);
+            logger.debug(errorRequestDTO.toString());
             assertEquals(1034, getCardBalance(cardFrom.getCardId(), registeredUser.bearer));
         }
     }

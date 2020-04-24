@@ -4,7 +4,6 @@ import com.example.bank.dao.AuthorizationTokenRepository;
 import com.example.bank.dto.UserDTO;
 import com.example.bank.entity.AuthorizationToken;
 import com.example.bank.service.AuthorizationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
