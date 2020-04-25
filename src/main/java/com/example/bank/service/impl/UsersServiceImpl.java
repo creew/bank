@@ -72,8 +72,7 @@ public class UsersServiceImpl implements UsersService {
         if (searchedForUser == null) {
             throw new IllegalArgumentsPassed("User not found");
         }
-        String cryptedPassword = bCryptPasswordEncoder.encode(password);
-        if (!bCryptPasswordEncoder.matches(password, cryptedPassword)) {
+        if (!bCryptPasswordEncoder.matches(password, new String(searchedForUser.getPassword()))) {
             throw new WrongPasswordException("Incorrect password");
         }
         return createAuthorizationToken(searchedForUser);

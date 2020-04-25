@@ -18,11 +18,11 @@ public class Transaction {
     @Column(name = "TIME_EXECUTED")
     private Date timeExecuted;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_CARD_FROM_ID")
     private Card cardFrom;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_CARD_TO_ID")
     private Card cardTo;
 

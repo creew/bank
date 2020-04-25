@@ -13,8 +13,10 @@ public interface TransactionsRepository extends JpaRepository<Transaction, Long>
 
     @Query("SELECT u " +
             "FROM Transaction u " +
+            "LEFT JOIN Card c ON u.cardFrom.cardId = c.cardId " +
+            "LEFT JOIN Card d ON u.cardTo.cardId = d.cardId " +
             "WHERE " +
-            "(u.cardFrom.user.userId = ?1 OR u.cardTo.user.userId = ?1) AND " +
+            "(c.user.userId = ?1 OR d.user.userId = ?1) AND " +
             "u.amount BETWEEN ?2 AND ?3 AND " +
             "u.timeExecuted BETWEEN ?4 AND ?5")
     List<Transaction> fetchAllTransferByUser(
