@@ -10,7 +10,7 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
-    private Long id;
+    private Integer id;
 
     @Column(name = "AMOUNT")
     private Long amount;
@@ -26,7 +26,7 @@ public class Transaction {
     @JoinColumn(name = "FK_CARD_TO_ID")
     private Card cardTo;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 

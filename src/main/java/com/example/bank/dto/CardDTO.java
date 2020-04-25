@@ -9,13 +9,12 @@ public class CardDTO implements Serializable {
 
     private static final long serialVersionUID = -1986157594950218606L;
 
-    @NotNull
-    private Long cardId;
+    private @NotNull Integer cardId;
 
     @NotNull
     private Long amount;
 
-    public Long getCardId() {
+    public Integer getCardId() {
         return cardId;
     }
 
@@ -23,7 +22,7 @@ public class CardDTO implements Serializable {
         return amount;
     }
 
-    public void setCardId(Long cardId) {
+    public void setCardId(Integer cardId) {
         this.cardId = cardId;
     }
 
@@ -31,11 +30,19 @@ public class CardDTO implements Serializable {
         this.amount = amount;
     }
 
+    public CardDTO() {
+    }
+
     public static CardDTO fromCard(Card card) {
         CardDTO cardDto = new CardDTO();
         cardDto.cardId = card.getCardId();
         cardDto.amount = card.getAmount();
         return cardDto;
+    }
+
+    public CardDTO(@NotNull Integer cardId, @NotNull Long amount) {
+        this.cardId = cardId;
+        this.amount = amount;
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-public interface TransactionsRepository extends JpaRepository<Transaction, Long> {
+public interface TransactionsRepository extends JpaRepository<Transaction, Integer> {
 
     @Query("SELECT u " +
             "FROM Transaction u " +
@@ -20,7 +20,7 @@ public interface TransactionsRepository extends JpaRepository<Transaction, Long>
             "u.amount BETWEEN ?2 AND ?3 AND " +
             "u.timeExecuted BETWEEN ?4 AND ?5")
     List<Transaction> fetchAllTransferByUser(
-            Long userId,
+            int userId,
             Long from,
             Long to,
             Date timeFrom,
@@ -30,7 +30,7 @@ public interface TransactionsRepository extends JpaRepository<Transaction, Long>
     @Query("SELECT u FROM Transaction u WHERE u.cardFrom.cardId = ?1 and u.cardTo.cardId = ?2 and " +
             " u.amount BETWEEN ?3 AND ?4 AND u.timeExecuted BETWEEN ?5 AND ?6")
     List<Transaction> fetchAllTransferByUserToUser(
-            Long userId,
+            int userId,
             Long userToId,
             Long amountFrom,
             Long amountTo,

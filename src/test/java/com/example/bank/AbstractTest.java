@@ -147,7 +147,7 @@ public abstract class AbstractTest {
         return cardNew.getAmount();
     }
 
-    protected String sendTransferRequest(long cardIdFrom, long cardIdTo, long amount,
+    protected String sendTransferRequest(int cardIdFrom, int cardIdTo, long amount,
                                          HttpStatus expected, String bearer) {
         RequestTransferDTO requestTransferDTO = new RequestTransferDTO(cardIdTo, amount);
         ResponseEntity<String> responseTransfer = executeExchangeWithBody("/transfer/" + cardIdFrom,
@@ -172,7 +172,7 @@ public abstract class AbstractTest {
         return responseDeposit.getBody();
     }
 
-    protected CardDTO createTransfer(long cardIdFrom, long cardIdTo, long amount, String bearer) {
+    protected CardDTO createTransfer(int cardIdFrom, int cardIdTo, long amount, String bearer) {
         String s = sendTransferRequest(cardIdFrom, cardIdTo, amount,
                 HttpStatus.OK, bearer);
         VerifyTransferDTO verifyTransferDTO = parseJson(s, VerifyTransferDTO.class);

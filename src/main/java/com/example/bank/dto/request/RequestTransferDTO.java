@@ -12,25 +12,25 @@ public class RequestTransferDTO implements Serializable {
 
     @NotNull
     @JsonProperty("card_id_to")
-    private Long cardIdTo;
+    private Integer cardIdTo;
 
     @NotNull
     @Positive
     @JsonProperty("amount")
     private Long amount;
 
-    public long getCardIdTo() {
+    public Integer getCardIdTo() {
         return cardIdTo;
     }
 
-    public long getAmount() {
+    public Long getAmount() {
         return amount;
     }
 
     public RequestTransferDTO() {
     }
 
-    public RequestTransferDTO(long cardIdTo, long amount) {
+    public RequestTransferDTO(int cardIdTo, long amount) {
         this.cardIdTo = cardIdTo;
         this.amount = amount;
     }

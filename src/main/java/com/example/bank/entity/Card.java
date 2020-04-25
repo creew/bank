@@ -12,7 +12,7 @@ public class Card implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long cardId;
+    private Integer cardId;
 
     @Column(name="AMOUNT", nullable = false)
     private Long amount;
@@ -29,11 +29,11 @@ public class Card implements Serializable {
         this.amount = amount;
     }
 
-    public Long getCardId() {
+    public Integer getCardId() {
         return cardId;
     }
 
-    public void setCardId(Long cardId) {
+    public void setCardId(Integer cardId) {
         this.cardId = cardId;
     }
 

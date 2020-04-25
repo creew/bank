@@ -2,6 +2,7 @@ package com.example.bank.controller;
 
 import com.example.bank.dto.UserDTO;
 import com.example.bank.service.UsersService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +14,7 @@ public class Controller {
 
     private final UsersService usersService;
 
-    public Controller(UsersService usersService) {
+    public Controller(@Qualifier("usersServiceImpl") UsersService usersService) {
         this.usersService = usersService;
     }
 

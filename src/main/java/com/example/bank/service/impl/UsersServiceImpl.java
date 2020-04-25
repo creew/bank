@@ -2,8 +2,8 @@ package com.example.bank.service.impl;
 
 import com.example.bank.dao.UserRepository;
 import com.example.bank.dto.UserDTO;
-import com.example.bank.dto.response.AuthenticatedUserTokenDTO;
 import com.example.bank.dto.request.UserRegisterDTO;
+import com.example.bank.dto.response.AuthenticatedUserTokenDTO;
 import com.example.bank.entity.AuthorizationToken;
 import com.example.bank.entity.User;
 import com.example.bank.exception.DuplicateEntryException;
@@ -26,12 +26,6 @@ public class UsersServiceImpl implements UsersService {
     public UsersServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
-
-    @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentsPassed("No customer with id " + id + " found"));
     }
 
     private User createNewUser(UserRegisterDTO customer) {
@@ -84,7 +78,8 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public void deleteUserById(Long id) {
+    public void deleteUserById(int id) {
         userRepository.deleteById(id);
     }
+
 }

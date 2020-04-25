@@ -19,8 +19,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
-    public void deleteAuthorizationToken(Long id) {
-        authorizationTokenRepository.deleteById(id);
+    public void deleteAuthorizationToken(String token) {
+        authorizationTokenRepository.deleteAuthorizationTokenByToken(token);
     }
 
     @Override
@@ -32,5 +32,4 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         }
         return Optional.empty();
     }
-
 }

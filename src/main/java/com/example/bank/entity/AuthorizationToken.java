@@ -14,7 +14,7 @@ public class AuthorizationToken implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private Integer id;
 
     @Column(name = "token", length=36)
     private String token;
@@ -58,11 +58,11 @@ public class AuthorizationToken implements Serializable {
         return timeCreated;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

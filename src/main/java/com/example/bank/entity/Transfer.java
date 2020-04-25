@@ -14,7 +14,7 @@ public class Transfer implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id")
-    private Long id;
+    private Integer id;
 
     @Column(name = "amount")
     private Long amount;

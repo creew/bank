@@ -1,6 +1,7 @@
-package com.example.bank.service.impl;
+package com.example.bank.service.common;
 
 import com.example.bank.service.UsersService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,7 @@ public class CustomUserServiceImpl implements UserDetailsService {
 
     private final UsersService usersService;
 
-    public CustomUserServiceImpl(UsersService usersService) {
+    public CustomUserServiceImpl(@Qualifier("usersServiceImpl") UsersService usersService) {
         this.usersService = usersService;
     }
 

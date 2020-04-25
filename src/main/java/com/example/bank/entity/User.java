@@ -3,6 +3,7 @@ package com.example.bank.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -14,7 +15,7 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long userId;
+    private Integer userId;
 
     @Column(name = "UUID", length=36)
     private String uuid;
@@ -37,11 +38,11 @@ public class User implements Serializable {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private AuthorizationToken authorizationToken;
 
-    public Long getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -99,6 +100,10 @@ public class User implements Serializable {
 
     public User() {
         this(UUID.randomUUID());
+    }
+
+    public User(Integer userId) {
+        this.userId = userId;
     }
 
     public UUID getUuid() {

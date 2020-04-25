@@ -5,8 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AuthorizationTokenRepository extends JpaRepository<AuthorizationToken, Long> {
+public interface AuthorizationTokenRepository extends JpaRepository<AuthorizationToken, Integer> {
 
     AuthorizationToken findAuthorizationTokenByToken(String token);
+
+    void deleteAuthorizationTokenByToken(String token);
 
 }

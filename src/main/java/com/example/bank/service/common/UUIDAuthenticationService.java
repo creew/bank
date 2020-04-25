@@ -1,4 +1,4 @@
-package com.example.bank.service.impl;
+package com.example.bank.service.common;
 
 import com.example.bank.dto.UserDTO;
 import com.example.bank.dto.response.AuthenticatedUserTokenDTO;
@@ -7,6 +7,7 @@ import com.example.bank.entity.User;
 import com.example.bank.service.AuthorizationService;
 import com.example.bank.service.UserAuthenticationService;
 import com.example.bank.service.UsersService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -18,7 +19,8 @@ public class UUIDAuthenticationService implements UserAuthenticationService {
 
     private final AuthorizationService authorizationService;
 
-    public UUIDAuthenticationService(UsersService usersService, AuthorizationService authorizationService) {
+    public UUIDAuthenticationService(@Qualifier("usersServiceImpl") UsersService usersService,
+                                     @Qualifier("authorizationServiceJooq") AuthorizationService authorizationService) {
         this.usersService = usersService;
         this.authorizationService = authorizationService;
     }
@@ -36,10 +38,6 @@ public class UUIDAuthenticationService implements UserAuthenticationService {
 
     @Override
     public void logout(UserDTO userDTO) {
-        User user = usersService.getUserById(userDTO.getId());
-        AuthorizationToken authorizationToken = user.getAuthorizationToken();
-        if (authorizationToken != null) {
-            authorizationService.deleteAuthorizationToken(authorizationToken.getId());
-        }
+        authorizationService.deleteAuthorizationToken(userDTO.getAuthorizationToken());
     }
 }

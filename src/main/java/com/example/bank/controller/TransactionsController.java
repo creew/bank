@@ -5,6 +5,7 @@ import com.example.bank.dto.response.TransactionDTO;
 import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.service.TransactionsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequestMapping("/transactions")
 public class TransactionsController {
 
+    @Qualifier("transactionsServiceImpl")
     @Autowired
     private TransactionsService transactionsService;
 

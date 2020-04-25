@@ -34,7 +34,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<TransactionDTO> getTransactionsOfUser(Long userIdFrom, Long amountFrom, Long amountTo, Date dateFrom, Date dateTo) {
+    public List<TransactionDTO> getTransactionsOfUser(int userIdFrom, Long amountFrom, Long amountTo, Date dateFrom, Date dateTo) {
         List<Transaction> transactions = transactionsRepository.fetchAllTransferByUser(
                 userIdFrom, amountFrom, amountTo, dateFrom, dateTo);
         return transactions.stream()
@@ -44,7 +44,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<TransactionDTO> getTransactionsOfUserToUser(Long cardIdFrom, Long cardIdTo, Long amountFrom, Long amountTo, Date dateFrom, Date dateTo) {
+    public List<TransactionDTO> getTransactionsOfUserToUser(int cardIdFrom, Long cardIdTo, Long amountFrom, Long amountTo, Date dateFrom, Date dateTo) {
         List<Transaction> transactions = transactionsRepository.fetchAllTransferByUserToUser(
                 cardIdFrom, cardIdTo, amountFrom, amountTo, dateFrom, dateTo);
         return transactions.stream()

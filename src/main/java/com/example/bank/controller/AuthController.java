@@ -6,6 +6,7 @@ import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.WrongPasswordException;
 import com.example.bank.service.UsersService;
 import com.example.bank.service.UserAuthenticationService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class AuthController {
 
     private UserAuthenticationService authenticationService;
 
-    public AuthController(UsersService usersService,
+    public AuthController(@Qualifier("usersServiceJooq") UsersService usersService,
                           UserAuthenticationService authenticationService) {
         this.usersService = usersService;
         this.authenticationService = authenticationService;

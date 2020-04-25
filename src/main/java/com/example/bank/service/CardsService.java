@@ -10,18 +10,18 @@ import java.util.Optional;
 
 public interface CardsService {
 
-    CardDTO deposit(long cardId, Long amount);
+    CardDTO deposit(Integer cardId, Long amount);
 
-    CardDTO createCard(User user);
+    VerifyTransferDTO createVerifyRequest(int userFromId, int cardIdFrom, int cardIdTo, long amount);
 
-    VerifyTransferDTO createVerifyRequest(long userFromId, long cardIdFrom, long cardIdTo, long amount);
+    CardDTO completeTransfer(int userFromId, CompleteTransferDTO completeTransferDto);
 
-    CardDTO completeTransfer(long userFromId, CompleteTransferDTO completeTransferDto);
+    Optional<CardDTO> checkIsUsersCard(int userId, int cardId);
 
-    Optional<CardDTO> checkIsUsersCard(long userId, long cardId);
+    List<CardDTO> getAllUserCard(int userId);
 
-    List<CardDTO> getAllUserCard(long userId);
+    void deleteCardById(int cardId);
 
-    void deleteCardById(long cardId);
+    CardDTO createCard(int userId);
 
 }

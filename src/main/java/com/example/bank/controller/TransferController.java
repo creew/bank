@@ -7,6 +7,7 @@ import com.example.bank.dto.request.RequestTransferDTO;
 import com.example.bank.dto.response.VerifyTransferDTO;
 import com.example.bank.service.CardsService;
 import com.example.bank.service.TransfersService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,8 @@ public class TransferController {
 
     private final TransfersService transfersService;
 
-    public TransferController(CardsService cardsService, TransfersService transfersService) {
+    public TransferController(@Qualifier("cardsServiceImpl") CardsService cardsService,
+                              TransfersService transfersService) {
         this.cardsService = cardsService;
         this.transfersService = transfersService;
     }
@@ -29,7 +31,7 @@ public class TransferController {
     @PutMapping("/{cardIdFrom}")
     @ResponseStatus(HttpStatus.OK)
     public VerifyTransferDTO transferRequest(@AuthenticationPrincipal UserDTO user,
-                                             @PathVariable Long cardIdFrom,
+                                             @PathVariable Integer cardIdFrom,
                                              @RequestBody @Valid RequestTransferDTO requestTransferDTO) {
         return cardsService.createVerifyRequest(user.getId(), cardIdFrom, requestTransferDTO.getCardIdTo(),
                 requestTransferDTO.getAmount());

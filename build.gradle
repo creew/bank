@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.jooq:jooq-codegen:3.13.1'
+        classpath 'org.postgresql:postgresql:42.2.12'
+    }
+}
+
 plugins {
     id 'org.springframework.boot' version '2.2.6.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
@@ -20,10 +31,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+    compile group: 'org.jooq', name: 'jooq', version: '3.13.1'
+
     compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
 
     runtimeOnly 'org.postgresql:postgresql'
-    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.h2database:h2:1.4.200'
+
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
@@ -37,3 +51,40 @@ test {
 bootJar {
     mainClassName = 'com.example.bank.BankApplication'
 }
+
+
+
+def writer = new StringWriter()
+def xml = new groovy.xml.MarkupBuilder(writer)
+        .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.13.0.xsd') {
+            jdbc() {
+                driver('org.postgresql.Driver')
+                url('jdbc:postgresql://localhost/bank_db')
+                user('admin')
+                password('pass')
+            }
+            generator() {
+                database() {
+                    inputSchema("public")
+                    name('org.jooq.meta.postgres.PostgresDatabase')
+                    includes('.*')
+                }
+
+                // Watch out for this caveat when using MarkupBuilder with "reserved names"
+                // - https://github.com/jOOQ/jOOQ/issues/4797
+                // - http://stackoverflow.com/a/11389034/521799
+                // - https://groups.google.com/forum/#!topic/jooq-user/wi4S9rRxk4A
+                generate([:]) {
+                    pojos true
+                    daos true
+                }
+                target() {
+                    packageName('com.example.bank.jooq')
+                    directory('src/main/java')
+                }
+            }
+        }
+
+// Run the code generator
+// ----------------------
+org.jooq.codegen.GenerationTool.generate(writer.toString())

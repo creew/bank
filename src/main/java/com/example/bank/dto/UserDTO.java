@@ -12,17 +12,19 @@ public class UserDTO implements UserDetails, Serializable {
 
     private static final long serialVersionUID = -1518990577336335727L;
 
-    private long id;
+    private int id;
+
+    private String authorizationToken;
 
     private String username;
 
     private String password;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -32,6 +34,26 @@ public class UserDTO implements UserDetails, Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getAuthorizationToken() {
+        return authorizationToken;
+    }
+
+    public void setAuthorizationToken(String authorizationToken) {
+        this.authorizationToken = authorizationToken;
+    }
+
+    public UserDTO() {
+    }
+
+    public UserDTO(int id) {
+        this.id = id;
+    }
+
+    public UserDTO(int id, String authorizationToken) {
+        this.id = id;
+        this.authorizationToken = authorizationToken;
     }
 
     public static UserDTO fromUser(User user) {

@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface AuthorizationService {
 
-    void deleteAuthorizationToken(Long id);
+    void deleteAuthorizationToken(String token);
 
     Optional<UserDTO> getUserFromAuthorizationToken(String token);
 

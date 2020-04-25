@@ -47,6 +47,16 @@ public class TransactionDTO implements Serializable {
         this.credentialsTo = credentialsTo;
     }
 
+    public TransactionDTO() {
+    }
+
+    public TransactionDTO(Date executedDate, Long amount, String credentialsTo, String credentialsFrom) {
+        this.executedDate = executedDate;
+        this.amount = amount;
+        this.credentialsTo = credentialsTo;
+        this.credentialsFrom = credentialsFrom;
+    }
+
     public static TransactionDTO fromTransfer(Transaction transaction) {
         TransactionDTO transactionDTO = new TransactionDTO();
         transactionDTO.executedDate = transaction.getTimeExecuted();
