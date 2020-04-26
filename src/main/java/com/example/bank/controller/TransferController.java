@@ -1,6 +1,6 @@
 package com.example.bank.controller;
 
-import com.example.bank.dto.CardDTO;
+import com.example.bank.dto.response.CardDTO;
 import com.example.bank.dto.UserDTO;
 import com.example.bank.dto.request.CompleteTransferDTO;
 import com.example.bank.dto.request.RequestTransferDTO;
@@ -23,7 +23,7 @@ public class TransferController {
     private final TransfersService transfersService;
 
     public TransferController(@Qualifier("cardsServiceImpl") CardsService cardsService,
-                              TransfersService transfersService) {
+                              @Qualifier("transfersServiceImpl") TransfersService transfersService) {
         this.cardsService = cardsService;
         this.transfersService = transfersService;
     }
@@ -33,7 +33,7 @@ public class TransferController {
     public VerifyTransferDTO transferRequest(@AuthenticationPrincipal UserDTO user,
                                              @PathVariable Integer cardIdFrom,
                                              @RequestBody @Valid RequestTransferDTO requestTransferDTO) {
-        return cardsService.createVerifyRequest(user.getId(), cardIdFrom, requestTransferDTO.getCardIdTo(),
+        return transfersService.createVerifyRequest(user.getId(), cardIdFrom, requestTransferDTO.getCardIdTo(),
                 requestTransferDTO.getAmount());
     }
 
@@ -41,6 +41,6 @@ public class TransferController {
     @ResponseStatus(HttpStatus.OK)
     public CardDTO transferComplete(@AuthenticationPrincipal UserDTO user,
                                     @RequestBody @Valid CompleteTransferDTO completeTransfer) {
-        return cardsService.completeTransfer(user.getId(), completeTransfer );
+        return transfersService.completeTransfer(user.getId(), completeTransfer );
     }
 }

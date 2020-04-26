@@ -14,7 +14,7 @@ public class Controller {
 
     private final UsersService usersService;
 
-    public Controller(@Qualifier("usersServiceImpl") UsersService usersService) {
+    public Controller(@Qualifier("usersServiceJooq") UsersService usersService) {
         this.usersService = usersService;
     }
 

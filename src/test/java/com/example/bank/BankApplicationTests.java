@@ -1,6 +1,6 @@
 package com.example.bank;
 
-import com.example.bank.dto.CardDTO;
+import com.example.bank.dto.response.CardDTO;
 import com.example.bank.dto.request.CredentialsDTO;
 import com.example.bank.dto.request.UserRegisterDTO;
 import com.example.bank.dto.response.ErrorRequestDTO;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

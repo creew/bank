@@ -1,6 +1,6 @@
 package com.example.bank;
 
-import com.example.bank.dto.CardDTO;
+import com.example.bank.dto.response.CardDTO;
 import com.example.bank.dto.response.ErrorRequestDTO;
 import com.example.bank.dto.response.VerifyTransferDTO;
 import org.junit.jupiter.api.Test;

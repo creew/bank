@@ -1,4 +1,4 @@
-package com.example.bank.dto;
+package com.example.bank.dto.response;
 
 import com.example.bank.entity.Card;
 

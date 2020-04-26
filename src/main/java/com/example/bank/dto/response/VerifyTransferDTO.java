@@ -38,12 +38,18 @@ public class VerifyTransferDTO implements Serializable {
         this.token = token;
     }
 
+    public VerifyTransferDTO(String principal, long amount, String token) {
+        this.principal = principal;
+        this.amount = amount;
+        this.token = token;
+    }
+
     public static VerifyTransferDTO fromTransfer(Transfer transfer) {
-        VerifyTransferDTO verifyTransferDTO = new VerifyTransferDTO();
-        verifyTransferDTO.token = transfer.getToken();
-        verifyTransferDTO.amount = transfer.getAmount();
-        verifyTransferDTO.principal = transfer.getCardTo().getUser().getPrincipal();
-        return verifyTransferDTO;
+        return new VerifyTransferDTO(
+                transfer.getCardTo().getUser().getPrincipal(),
+                transfer.getAmount(),
+                transfer.getToken()
+        );
     }
 }
 

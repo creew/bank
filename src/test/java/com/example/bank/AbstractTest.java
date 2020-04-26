@@ -1,6 +1,6 @@
 package com.example.bank;
 
-import com.example.bank.dto.CardDTO;
+import com.example.bank.dto.response.CardDTO;
 import com.example.bank.dto.request.CompleteTransferDTO;
 import com.example.bank.dto.request.DepositCardDTO;
 import com.example.bank.dto.request.RequestTransferDTO;

@@ -1,8 +1,6 @@
 package com.example.bank.service.jooq;
 
-import com.example.bank.dto.CardDTO;
-import com.example.bank.dto.request.CompleteTransferDTO;
-import com.example.bank.dto.response.VerifyTransferDTO;
+import com.example.bank.dto.response.CardDTO;
 import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.jooq.tables.records.CardsRecord;
 import com.example.bank.service.CardsService;
@@ -50,16 +48,6 @@ public class CardsServiceJooq implements CardsService {
                 .where(CARDS.ID.eq(cardId))
                 .execute();
         return getCardDtoById(cardId);
-    }
-
-    @Override
-    public VerifyTransferDTO createVerifyRequest(int userFromId, int cardIdFrom, int cardIdTo, long amount) {
-        return null;
-    }
-
-    @Override
-    public CardDTO completeTransfer(int userFromId, CompleteTransferDTO completeTransferDto) {
-        return null;
     }
 
     @Override

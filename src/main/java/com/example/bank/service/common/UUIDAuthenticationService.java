@@ -19,7 +19,7 @@ public class UUIDAuthenticationService implements UserAuthenticationService {
 
     private final AuthorizationService authorizationService;
 
-    public UUIDAuthenticationService(@Qualifier("usersServiceImpl") UsersService usersService,
+    public UUIDAuthenticationService(@Qualifier("usersServiceJooq") UsersService usersService,
                                      @Qualifier("authorizationServiceJooq") AuthorizationService authorizationService) {
         this.usersService = usersService;
         this.authorizationService = authorizationService;

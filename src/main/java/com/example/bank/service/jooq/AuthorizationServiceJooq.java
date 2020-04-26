@@ -14,9 +14,9 @@ import static com.example.bank.jooq.tables.AuthorizationToken.AUTHORIZATION_TOKE
 @Service
 public class AuthorizationServiceJooq implements AuthorizationService {
 
-    private Logger logger = LoggerFactory.getLogger(AuthorizationServiceJooq.class);
+    private final Logger logger = LoggerFactory.getLogger(AuthorizationServiceJooq.class);
 
-    private  DSLContext dslContext;
+    private final DSLContext dslContext;
 
     public AuthorizationServiceJooq(DSLContext dslContext) {
         this.dslContext = dslContext;
@@ -31,7 +31,7 @@ public class AuthorizationServiceJooq implements AuthorizationService {
     @Override
     public Optional<UserDTO> getUserFromAuthorizationToken(String token) {
         UserDTO userDTO = dslContext.selectFrom(AUTHORIZATION_TOKEN)
-                .where(AUTHORIZATION_TOKEN.TOKEN.eq(token)).fetchOne(mapper -> new UserDTO(mapper.getId()));
+                .where(AUTHORIZATION_TOKEN.TOKEN.eq(token)).fetchOne(mapper -> new UserDTO(mapper.getFkUserId()));
         logger.info("getUserFromAuthorizationToken: token: " + token);
         return Optional.ofNullable(userDTO);
     }
