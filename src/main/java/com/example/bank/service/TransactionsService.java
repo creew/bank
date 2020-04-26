@@ -8,9 +8,6 @@ import java.util.List;
 
 public interface TransactionsService {
 
-    List<TransactionDTO> getTransactionsOfUser(Long userIdFrom, Long amountFrom, Long amountTo,
-                                            Date dateFrom, Date dateTo);
-
     List<TransactionDTO> getTransactionsOfUserToUser(Long cardIdFrom, Long cardIdTo, Long amountFrom,
                                                   Long amountTo, Date dateFrom, Date dateTo);
 

@@ -21,6 +21,9 @@ public class Card implements Serializable {
     @JoinColumn(name = "FK_USER_ID",  nullable = false)
     private User user;
 
+    @Column(name = "FK_USER_ID", insertable = false, updatable = false)
+    private Long fkUserId;
+
     public Card() {
     }
 
@@ -53,4 +56,11 @@ public class Card implements Serializable {
         this.user = user;
     }
 
+    public Long getFkUserId() {
+        return fkUserId;
+    }
+
+    public void setFkUserId(Long fkUserId) {
+        this.fkUserId = fkUserId;
+    }
 }

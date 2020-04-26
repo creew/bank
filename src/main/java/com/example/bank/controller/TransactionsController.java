@@ -28,33 +28,21 @@ public class TransactionsController {
                                                  @RequestParam(value = "to_amount", required = false) Long toAmount,
                                                  @RequestParam(value = "to_user", required = false) Long userId) {
         Date curDate = new Date();
-        Date fromDate;
-        Date toDate;
-        if (fromDateLong == null) {
-            fromDate = new Date(0);
-        } else {
+        Date fromDate = null;
+        Date toDate = null;
+        if (fromDateLong != null) {
             if (fromDateLong > curDate.getTime()) {
                 throw new IllegalArgumentsPassed("Wrong from_date");
             }
             fromDate = new Date(fromDateLong);
         }
-        if (toDateLong == null) {
-            toDate = curDate;
-        } else {
+        if (toDateLong != null) {
             if (toDateLong > curDate.getTime()) {
                 throw new IllegalArgumentsPassed("Wrong to_date");
             }
             toDate = new Date(toDateLong);
         }
-        if (fromAmount == null)
-            fromAmount = 0L;
-        if (toAmount == null)
-            toAmount = Long.MAX_VALUE;
-        if (userId == null) {
-            return transactionsService.getTransactionsOfUser(user.getId(), fromAmount, toAmount, fromDate, toDate);
-        } else {
-            return transactionsService.getTransactionsOfUserToUser(user.getId(), userId, fromAmount, toAmount,
-                    fromDate, toDate);
-        }
+        return transactionsService.getTransactionsOfUserToUser(user.getId(), userId, fromAmount,
+                toAmount,fromDate, toDate);
     }
 }
