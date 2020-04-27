@@ -1,7 +1,7 @@
 package com.example.bank.service.impl;
 
 import com.example.bank.dao.CardRepository;
-import com.example.bank.dto.CardDTO;
+import com.example.bank.dto.response.CardDTO;
 import com.example.bank.dto.request.CompleteTransferDTO;
 import com.example.bank.dto.response.VerifyTransferDTO;
 import com.example.bank.entity.Card;
@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -90,11 +89,11 @@ public class CardsServiceImpl implements CardsService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<CardDTO> checkIsUsersCard(long userId, long cardId) {
+    public CardDTO checkIsUsersCard(long userId, long cardId) {
         Card card = cardRepository.getOne(cardId);
         if (card.getUser().getUserId().equals(userId))
-            return Optional.of(CardDTO.fromCard(card));
-        return Optional.empty();
+            return CardDTO.fromCard(card);
+        throw new IllegalCardIdPassed();
     }
 
     @Override

@@ -2,19 +2,16 @@ package com.example.bank.service.impl;
 
 import com.example.bank.dao.UserRepository;
 import com.example.bank.dto.UserDTO;
-import com.example.bank.dto.response.AuthenticatedUserTokenDTO;
 import com.example.bank.dto.request.UserRegisterDTO;
+import com.example.bank.dto.response.AuthenticatedUserTokenDTO;
 import com.example.bank.entity.AuthorizationToken;
 import com.example.bank.entity.User;
-import com.example.bank.exception.DuplicateEntryException;
 import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.WrongPasswordException;
 import com.example.bank.service.UsersService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 public class UsersServiceImpl implements UsersService {
@@ -44,12 +41,13 @@ public class UsersServiceImpl implements UsersService {
         return newUser;
     }
 
-    private AuthenticatedUserTokenDTO createAuthorizationToken(User user) {
+    @Transactional
+    public AuthenticatedUserTokenDTO createAuthorizationToken(User user) {
         AuthorizationToken token = user.getAuthorizationToken();
         if (token == null || token.hasExpired()) {
             token = new AuthorizationToken(user);
             user.setAuthorizationToken(token);
-            userRepository.saveAndFlush(user);
+            token = userRepository.saveAndFlush(user).getAuthorizationToken();
         }
         return AuthenticatedUserTokenDTO.fromAuthorizationToken(token);
     }
@@ -57,10 +55,6 @@ public class UsersServiceImpl implements UsersService {
     @Override
     @Transactional
     public AuthenticatedUserTokenDTO createUser(UserRegisterDTO request) {
-        User searchedForUser = userRepository.findUserByLogin(request.getLogin());
-        if (searchedForUser != null) {
-            throw new DuplicateEntryException("User: " + searchedForUser.getLogin() + " already exists");
-        }
         User saved = userRepository.save(createNewUser(request));
         return createAuthorizationToken(saved);
     }
@@ -80,7 +74,10 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public UserDTO findUserByLogin(String login) {
-        return Optional.of(userRepository.findUserByLogin(login)).map(UserDTO::fromUser).orElse(null);
+        User user = userRepository.findUserByLogin(login);
+        if (user == null)
+            return null;
+        return UserDTO.fromUser(user);
     }
 
     @Override

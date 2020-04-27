@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface AuthorizationTokenRepository extends JpaRepository<AuthorizationToken, Long> {
+public interface AuthorizationTokenRepository extends JpaRepository<AuthorizationToken, UUID> {
 
-    AuthorizationToken findAuthorizationTokenByToken(UUID token);
+    AuthorizationToken findAuthorizationTokenById(UUID id);
 
 }

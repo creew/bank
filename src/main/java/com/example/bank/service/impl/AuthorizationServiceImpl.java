@@ -20,15 +20,15 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
-    public void deleteAuthorizationToken(Long id) {
+    public void deleteAuthorizationToken(UUID id) {
         authorizationTokenRepository.deleteById(id);
     }
 
     @Override
     @Transactional
-    public Optional<UserDTO> getUserFromAuthorizationToken(String token) {
+    public Optional<UserDTO> getUserFromAuthorizationToken(UUID token) {
         AuthorizationToken authorizationToken = authorizationTokenRepository
-                .findAuthorizationTokenByToken(UUID.fromString(token));
+                .findAuthorizationTokenById(token);
         if (authorizationToken != null && !authorizationToken.hasExpired()) {
             return Optional.of(UserDTO.fromUser(authorizationToken.getUser()));
         }

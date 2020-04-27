@@ -1,5 +1,7 @@
 package com.example.bank.entity;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -11,39 +13,39 @@ public class Transfer implements Serializable {
 
     private static final Integer DEFAULT_TIME_TO_LIVE_IN_SECONDS = (60 * 5);
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @Column(name = "id")
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "ID", updatable = false, nullable = false)
+    private UUID id;
 
-    @Column(name = "amount")
+    @Column(name = "AMOUNT")
     private Long amount;
 
-    @Column(name = "token")
-    private UUID token;
-
-    @Column(name = "time_created")
+    @Column(name = "TIME_CREATED")
     private Date timeCreated;
 
-    @Column(name = "time_expiration")
+    @Column(name = "TIME_EXPIRATION")
     private Date timeExpiration;
 
-    @Column(name = "executed")
+    @Column(name = "EXECUTED")
     private Boolean executed;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_card_from_id")
+    @JoinColumn(name = "FK_CARD_FROM_ID")
     private Card cardFrom;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_card_to_id")
+    @JoinColumn(name = "FK_CARD_TO_ID")
     private Card cardTo;
 
     public Transfer() {
     }
 
     public Transfer(Card cardFrom, Integer timeToLiveInSeconds) {
-        this.token = UUID.randomUUID();
         this.cardFrom = cardFrom;
         this.timeCreated = new Date();
         this.executed = false;
@@ -70,14 +72,6 @@ public class Transfer implements Serializable {
 
     public void setAmount(Long amount) {
         this.amount = amount;
-    }
-
-    public UUID getToken() {
-        return token;
-    }
-
-    public void setToken(UUID token) {
-        this.token = token;
     }
 
     public Date getTimeCreated() {
@@ -118,5 +112,9 @@ public class Transfer implements Serializable {
 
     public void setExecuted(boolean active) {
         this.executed = active;
+    }
+
+    public UUID getId() {
+        return id;
     }
 }

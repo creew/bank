@@ -30,7 +30,7 @@ public class TransfersServiceImpl implements TransfersService {
     @Override
     @Transactional(readOnly = true)
     public Optional<Transfer> findTransferByToken(String token) {
-        Transfer transfer = transferRepository.findTransferByToken(UUID.fromString(token));
+        Transfer transfer = transferRepository.findTransferById(UUID.fromString(token));
         if (transfer != null && !transfer.isExecuted() && !transfer.hasExpired()) {
             return Optional.of(transfer);
         }
@@ -43,5 +43,4 @@ public class TransfersServiceImpl implements TransfersService {
         transfer.setExecuted(true);
         transferRepository.saveAndFlush(transfer);
     }
-
 }

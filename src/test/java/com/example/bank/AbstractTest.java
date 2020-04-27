@@ -1,6 +1,6 @@
 package com.example.bank;
 
-import com.example.bank.dto.CardDTO;
+import com.example.bank.dto.response.CardDTO;
 import com.example.bank.dto.request.CompleteTransferDTO;
 import com.example.bank.dto.request.DepositCardDTO;
 import com.example.bank.dto.request.RequestTransferDTO;
@@ -19,16 +19,19 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ActiveProfiles("test")
 public abstract class AbstractTest {
 
     @LocalServerPort
@@ -37,6 +40,8 @@ public abstract class AbstractTest {
     protected RestTemplate restTemplate;
 
     protected RegisterUser registeredUser;
+
+    protected static final Random random = new Random();
 
     @BeforeEach
     void beforeEach() {
@@ -57,13 +62,8 @@ public abstract class AbstractTest {
 
     @Autowired
     public void setRestTemplate(RestTemplateBuilder builder) {
-        RestTemplate restTemplate = builder.build();
-        restTemplate.setErrorHandler(new MyErrorHandler());
-        this.restTemplate = restTemplate;
-    }
-
-    protected String getContextPath() {
-        return BASE_URL + port + servletContextPath;
+        this.restTemplate = builder.build();
+        this.restTemplate.setErrorHandler(new MyErrorHandler());
     }
 
     public static class MyErrorHandler implements ResponseErrorHandler {
@@ -74,8 +74,12 @@ public abstract class AbstractTest {
 
         @Override
         public void handleError(ClientHttpResponse response) {
-
+            // skip errors
         }
+    }
+
+    protected String getContextPath() {
+        return BASE_URL + port + servletContextPath;
     }
 
     private RegisterUser registerNewUser(UserRegisterDTO userRegisterDTO) {
@@ -87,17 +91,17 @@ public abstract class AbstractTest {
     }
 
     protected RegisterUser registerRandomUser() {
-        RegisterUser regUser = new RegisterUser();
-        return registerNewUser(new UserRegisterDTO(regUser.login, regUser.password,
-                "12", "12", "12", regUser.password));
+        String password = randomPrinciple();
+        return registerNewUser(new UserRegisterDTO(randomPrinciple(), password,
+                "12", "12", "12", password));
     }
 
     protected HttpHeaders createHeaders(String bearer){
-        return new HttpHeaders() {{
-            setBearerAuth(bearer);
-            setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-            setContentType(MediaType.APPLICATION_JSON);
-        }};
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setBearerAuth(bearer);
+        httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return httpHeaders;
     }
 
     protected  <T> HttpEntity<T> createHttpEntity(T body, String bearer)
@@ -180,6 +184,10 @@ public abstract class AbstractTest {
         return parseJson(s, CardDTO.class);
     }
 
+    public static String randomPrinciple() {
+        return Integer.toString(random.nextInt(1_000_000_000));
+    }
+
     class RegisterUser implements AutoCloseable {
 
         String login;
@@ -188,8 +196,8 @@ public abstract class AbstractTest {
         ResponseEntity<JsonNode> responseEntity;
 
         public RegisterUser() {
-            this.login = Integer.toString((int)(Math.random() * 1_000_000_000));
-            this.password = Integer.toString((int)(Math.random() * 1_000_000_000));
+            this.login = randomPrinciple();
+            this.password = randomPrinciple();
         }
 
         public RegisterUser(String login, String password) {

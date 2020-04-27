@@ -10,6 +10,7 @@ import com.example.bank.service.UsersService;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 public class UUIDAuthenticationService implements UserAuthenticationService {
@@ -31,7 +32,12 @@ public class UUIDAuthenticationService implements UserAuthenticationService {
 
     @Override
     public Optional<UserDTO> findByToken(String token) {
-        return authorizationService.getUserFromAuthorizationToken(token);
+        try {
+            UUID uuid = UUID.fromString(token);
+            return authorizationService.getUserFromAuthorizationToken(uuid);
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

@@ -25,6 +25,7 @@ public class TokenAuthenticationProvider extends AbstractUserDetailsAuthenticati
     @Override
     protected UserDTO retrieveUser(String username, UsernamePasswordAuthenticationToken authentication) {
         Object token = authentication.getCredentials();
+
         return auth.findByToken(String.valueOf(token))
                 .orElseThrow(() -> new UsernameNotFoundException("Cannot find user with authentication token=" + token));
     }

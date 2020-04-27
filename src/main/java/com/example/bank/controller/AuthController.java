@@ -2,6 +2,7 @@ package com.example.bank.controller;
 
 import com.example.bank.dto.request.CredentialsDTO;
 import com.example.bank.dto.request.UserRegisterDTO;
+import com.example.bank.exception.DuplicateEntryException;
 import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.WrongPasswordException;
 import com.example.bank.service.UsersService;
@@ -41,7 +42,9 @@ public class AuthController {
         if (!userRegisterDto.getPassword().equals(userRegisterDto.getPasswordConfirm())){
             throw new IllegalArgumentsPassed("Пароли не совпадают");
         }
+        if (usersService.findUserByLogin(userRegisterDto.getLogin()) != null) {
+            throw new DuplicateEntryException("login " + userRegisterDto.getLogin() + " already exist");
+        }
         return Collections.singletonMap("bearer", usersService.createUser(userRegisterDto).getToken());
     }
-
 }

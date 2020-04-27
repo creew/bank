@@ -1,11 +1,10 @@
 package com.example.bank.controller;
 
-import com.example.bank.dto.CardDTO;
+import com.example.bank.dto.response.CardDTO;
 import com.example.bank.dto.UserDTO;
 import com.example.bank.dto.request.DepositCardDTO;
 import com.example.bank.entity.User;
 import com.example.bank.exception.IllegalArgumentsPassed;
-import com.example.bank.exception.IllegalCardIdPassed;
 import com.example.bank.service.CardsService;
 import com.example.bank.service.UsersService;
 import org.springframework.http.HttpStatus;
@@ -28,13 +27,13 @@ public class CardsController {
     }
 
     @GetMapping
-    public List<CardDTO> getAllCards(@AuthenticationPrincipal UserDTO user) {
+    public List<CardDTO> getAllCards(@AuthenticationPrincipal final UserDTO user) {
         return cardsService.getAllUserCard(user.getId());
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CardDTO createNewCard(@AuthenticationPrincipal UserDTO user) {
+    public CardDTO createNewCard(@AuthenticationPrincipal final UserDTO user) {
         User fromBase = usersService.getUserById(user.getId());
         return cardsService.createCard(fromBase);
     }
@@ -42,7 +41,7 @@ public class CardsController {
     @GetMapping("/{cardId}")
     public CardDTO getOneCards(@AuthenticationPrincipal final UserDTO user,
                                @PathVariable Long cardId) {
-        return cardsService.checkIsUsersCard(user.getId(), cardId).orElseThrow(IllegalCardIdPassed::new);
+        return cardsService.checkIsUsersCard(user.getId(), cardId);
     }
 
     @PostMapping("/{cardId}")
@@ -52,7 +51,7 @@ public class CardsController {
         if (depositCardDTO.getAmount() <= 0) {
             throw new IllegalArgumentsPassed("amount less than or equal zero");
         }
-        CardDTO card = cardsService.checkIsUsersCard(user.getId(), cardId).orElseThrow(IllegalCardIdPassed::new);
+        CardDTO card = cardsService.checkIsUsersCard(user.getId(), cardId);
         return cardsService.deposit(card.getCardId(), depositCardDTO.getAmount());
     }
 
@@ -60,7 +59,7 @@ public class CardsController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteOneCards(@AuthenticationPrincipal final UserDTO user,
                                @PathVariable Long cardId) {
-        CardDTO card = cardsService.checkIsUsersCard(user.getId(), cardId).orElseThrow(IllegalCardIdPassed::new);
+        CardDTO card = cardsService.checkIsUsersCard(user.getId(), cardId);
         cardsService.deleteCardById(card.getCardId());
     }
 }

@@ -1,6 +1,6 @@
 package com.example.bank;
 
-import com.example.bank.dto.CardDTO;
+import com.example.bank.dto.response.CardDTO;
 import com.example.bank.dto.response.TransactionDTO;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -19,10 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestTransferInfo extends AbstractTest {
 
-    Logger logger = LoggerFactory.getLogger(TestTransfers.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestTransferInfo.class);
+
+    private static final String TRANSACTIONS_PATH = "/transactions";
 
     TransactionDTO[] sendGetInfo(Map<String, String> params, HttpStatus expected, String bearer) {
-        String url = getContextPath() + "/transactions" + ( params.size() == 0 ? "" : "?" +
+        String url = getContextPath() + TRANSACTIONS_PATH + ( params.size() == 0 ? "" : "?" +
                 params.entrySet().stream()
                 .map(entry -> entry.getKey() + "=" + entry.getValue())
                 .collect(Collectors.joining("&")));
@@ -43,9 +45,9 @@ public class TestTransferInfo extends AbstractTest {
             createTransfer(card1.getCardId(), card2.getCardId(), 99, registeredUser.bearer);
             createTransfer(card1.getCardId(), card2.getCardId(), 99, registeredUser.bearer);
             CardDTO newData = createTransfer(card1.getCardId(), card2.getCardId(), 99, registeredUser.bearer);
-            logger.info(newData.toString());
+            logger.info("Card data: {}", newData);
             TransactionDTO[] infos = sendGetInfo(Collections.emptyMap(), HttpStatus.OK, registeredUser.bearer);
-            logger.info(Arrays.toString(infos));
+            logger.info("Transactions info: {}", Arrays.toString(infos));
             assertEquals(5, infos.length);
         }
     }

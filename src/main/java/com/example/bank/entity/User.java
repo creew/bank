@@ -2,22 +2,19 @@ package com.example.bank.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
-@Table(name= "users")
+@Table(name= "USERS")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 2765105000222936867L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Long userId;
-
-    @Column(name = "UUID")
-    private UUID uuid;
 
     @Column(name = "LOGIN", nullable = false)
     private String login;
@@ -93,31 +90,14 @@ public class User implements Serializable {
         this.authorizationToken = authorizationToken;
     }
 
-    public User(UUID uuid) {
-        this.uuid = uuid;
-    }
-
-    public User() {
-        this(UUID.randomUUID());
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return userId.equals(user.userId) &&
-                uuid.equals(user.uuid) &&
                 login.equals(user.login) &&
-                password.equals(user.password) &&
+                Arrays.equals(password, user.password) &&
                 firstName.equals(user.firstName) &&
                 lastName.equals(user.lastName) &&
                 patronymic.equals(user.patronymic);
@@ -125,7 +105,7 @@ public class User implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, uuid, login, password, firstName, lastName, patronymic);
+        return Objects.hash(userId, login, password, firstName, lastName, patronymic);
     }
 
     public String getPrincipal() {
