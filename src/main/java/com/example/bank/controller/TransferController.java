@@ -19,11 +19,8 @@ public class TransferController {
 
     private final CardsService cardsService;
 
-    private final TransfersService transfersService;
-
-    public TransferController(CardsService cardsService, TransfersService transfersService) {
+    public TransferController(CardsService cardsService) {
         this.cardsService = cardsService;
-        this.transfersService = transfersService;
     }
 
     @PutMapping("/{cardIdFrom}")

@@ -23,7 +23,8 @@ public class TransactionRepositoryImpl implements TransactionRepositoryCustom {
     }
 
     @Override
-    public List<Transaction> fetchAllTransferByUserToUser(Long userId, Long userToId, Long amountFrom, Long amountTo, Date timeFrom, Date timeTo) {
+    public List<Transaction> fetchAllTransferByUser(Long userId, Long cardIdTo, Long amountFrom,
+                                                    Long amountTo, Date timeFrom, Date timeTo) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Transaction> cq = cb.createQuery(Transaction.class);
 
@@ -37,10 +38,34 @@ public class TransactionRepositoryImpl implements TransactionRepositoryCustom {
         Predicate predicateToUser = cb.equal(cardToJoin.get(Card_.FK_USER_ID), userId);
         predicates.add(cb.or(predicateFromUser, predicateToUser));
 
-        if (userToId != null) {
-            predicates.add(cb.equal(cardToJoin.get(Card_.FK_USER_ID), userToId));
+        if (cardIdTo != null) {
+            predicates.add(cb.equal(cardToJoin.get(Card_.CARD_ID), cardIdTo));
         }
+        addPredicates(amountFrom, amountTo, timeFrom, timeTo, cb, book, predicates);
+        cq.where(predicates.toArray(new Predicate[0]));
+        return em.createQuery(cq).getResultList();
+    }
 
+    @Override
+    public List<Transaction> fetchAllTransferByCard(Long cardId, Long cardIdTo, Long amountFrom, Long amountTo, Date timeFrom, Date timeTo) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Transaction> cq = cb.createQuery(Transaction.class);
+
+        Root<Transaction> book = cq.from(Transaction.class);
+        List<Predicate> predicates = new ArrayList<>();
+
+        predicates.add(cb.equal(book.get(Transaction_.FK_CARD_ID_FROM), cardId));
+
+        if(cardIdTo != null) {
+            predicates.add(cb.equal(book.get(Transaction_.FK_CARD_ID_TO), cardIdTo));
+        }
+        addPredicates(amountFrom, amountTo, timeFrom, timeTo, cb, book, predicates);
+        cq.where(predicates.toArray(new Predicate[0]));
+        return em.createQuery(cq).getResultList();
+    }
+
+    private void addPredicates(Long amountFrom, Long amountTo, Date timeFrom, Date timeTo,
+                               CriteriaBuilder cb, Root<Transaction> book, List<Predicate> predicates) {
         if (amountFrom != null) {
             predicates.add(cb.ge(book.get(Transaction_.AMOUNT), amountFrom));
         }
@@ -53,7 +78,5 @@ public class TransactionRepositoryImpl implements TransactionRepositoryCustom {
         if (timeTo != null) {
             predicates.add(cb.lessThanOrEqualTo(book.get(Transaction_.TIME_EXECUTED), timeTo));
         }
-        cq.where(predicates.toArray(new Predicate[0]));
-        return em.createQuery(cq).getResultList();
     }
 }

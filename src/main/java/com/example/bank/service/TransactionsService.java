@@ -8,8 +8,11 @@ import java.util.List;
 
 public interface TransactionsService {
 
-    List<TransactionDTO> getTransactionsOfUserToUser(Long cardIdFrom, Long cardIdTo, Long amountFrom,
-                                                  Long amountTo, Date dateFrom, Date dateTo);
+    List<TransactionDTO> getTransactionsOfUser(Long userId, Long cardIdTo, Long amountFrom,
+                                               Long amountTo, Long dateFrom, Long dateTo);
+
+    List<TransactionDTO> getTransactionsOfCard(Long cardId, Long cardIdTo, Long amountFrom,
+                                               Long amountTo, Long dateFrom, Long dateTo);
 
     void saveTransaction(Card cardFrom, Card cardTo, Long amount, Date date);
 }

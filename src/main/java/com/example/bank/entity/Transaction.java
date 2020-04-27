@@ -22,9 +22,15 @@ public class Transaction {
     @JoinColumn(name = "FK_CARD_FROM_ID")
     private Card cardFrom;
 
+    @Column(name = "FK_CARD_FROM_ID", insertable = false, updatable = false)
+    private Long fkCardIdFrom;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_CARD_TO_ID")
     private Card cardTo;
+
+    @Column(name = "FK_CARD_TO_ID", insertable = false, updatable = false)
+    private Long fkCardIdTo;
 
     public Long getId() {
         return id;
@@ -60,5 +66,13 @@ public class Transaction {
 
     public void setCardTo(Card cardTo) {
         this.cardTo = cardTo;
+    }
+
+    public Long getFkCardIdFrom() {
+        return fkCardIdFrom;
+    }
+
+    public Long getFkCardIdTo() {
+        return fkCardIdTo;
     }
 }

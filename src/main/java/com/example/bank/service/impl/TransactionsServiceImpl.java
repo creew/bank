@@ -32,13 +32,33 @@ public class TransactionsServiceImpl implements TransactionsService {
         transactionRepository.saveAndFlush(transaction);
     }
 
+    private Date getDateFromUnixTime(Long time) {
+        if (time != null) {
+            return new Date(time);
+        }
+        return null;
+    }
+
     @Transactional(readOnly = true)
     @Override
-    public List<TransactionDTO> getTransactionsOfUserToUser(Long cardIdFrom, Long cardIdTo, Long amountFrom, Long amountTo, Date dateFrom, Date dateTo) {
-        List<Transaction> transactions = transactionRepository.fetchAllTransferByUserToUser(
-                cardIdFrom, cardIdTo, amountFrom, amountTo, dateFrom, dateTo);
+    public List<TransactionDTO> getTransactionsOfUser(Long userId, Long cardIdTo, Long amountFrom,
+                                                      Long amountTo, Long dateFrom, Long dateTo) {
+        List<Transaction> transactions = transactionRepository.fetchAllTransferByUser(
+                userId, cardIdTo, amountFrom, amountTo,
+                getDateFromUnixTime(dateFrom), getDateFromUnixTime(dateTo));
         return transactions.stream()
                 .map(TransactionDTO::fromTransfer)
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<TransactionDTO> getTransactionsOfCard(Long cardId, Long cardIdTo, Long amountFrom,
+                                                      Long amountTo, Long dateFrom, Long dateTo) {
+        List<Transaction> transactions = transactionRepository.fetchAllTransferByCard(
+                cardId, cardIdTo, amountFrom, amountTo,
+                getDateFromUnixTime(dateFrom), getDateFromUnixTime(dateTo));
+        return transactions.stream()
+                .map(TransactionDTO::fromTransfer)
+                .collect(Collectors.toList());    }
 }

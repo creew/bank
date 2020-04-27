@@ -19,8 +19,8 @@ public class Transfer implements Serializable {
     @Column(name = "amount")
     private Long amount;
 
-    @Column(name = "token", length = 36)
-    private String token;
+    @Column(name = "token")
+    private UUID token;
 
     @Column(name = "time_created")
     private Date timeCreated;
@@ -43,7 +43,7 @@ public class Transfer implements Serializable {
     }
 
     public Transfer(Card cardFrom, Integer timeToLiveInSeconds) {
-        this.token = UUID.randomUUID().toString();
+        this.token = UUID.randomUUID();
         this.cardFrom = cardFrom;
         this.timeCreated = new Date();
         this.executed = false;
@@ -72,11 +72,11 @@ public class Transfer implements Serializable {
         this.amount = amount;
     }
 
-    public String getToken() {
+    public UUID getToken() {
         return token;
     }
 
-    public void setToken(String token) {
+    public void setToken(UUID token) {
         this.token = token;
     }
 

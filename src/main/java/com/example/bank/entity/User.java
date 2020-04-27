@@ -16,8 +16,8 @@ public class User implements Serializable {
     @Column(name = "id")
     private Long userId;
 
-    @Column(name = "UUID", length=36)
-    private String uuid;
+    @Column(name = "UUID")
+    private UUID uuid;
 
     @Column(name = "LOGIN", nullable = false)
     private String login;
@@ -94,7 +94,7 @@ public class User implements Serializable {
     }
 
     public User(UUID uuid) {
-        this.uuid = uuid.toString();
+        this.uuid = uuid;
     }
 
     public User() {
@@ -102,10 +102,10 @@ public class User implements Serializable {
     }
 
     public UUID getUuid() {
-        return UUID.fromString(uuid);
+        return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
 

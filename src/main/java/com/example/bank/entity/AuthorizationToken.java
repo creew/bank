@@ -16,8 +16,8 @@ public class AuthorizationToken implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "token", length=36)
-    private String token;
+    @Column(name = "token")
+    private UUID token;
 
     @Column(name = "time_created")
     private Date timeCreated;
@@ -36,7 +36,7 @@ public class AuthorizationToken implements Serializable {
     }
 
     public AuthorizationToken(User user, Integer timeToLiveInSeconds) {
-        this.token = UUID.randomUUID().toString();
+        this.token = UUID.randomUUID();
         this.user = user;
         this.timeCreated = new Date();
         this.timeExpiration = new Date(System.currentTimeMillis() + (timeToLiveInSeconds * 1000L));
@@ -46,7 +46,7 @@ public class AuthorizationToken implements Serializable {
         return this.timeExpiration != null && this.timeExpiration.before(new Date());
     }
 
-    public String getToken() {
+    public UUID getToken() {
         return token;
     }
 
@@ -66,7 +66,7 @@ public class AuthorizationToken implements Serializable {
         this.id = id;
     }
 
-    public void setToken(String token) {
+    public void setToken(UUID token) {
         this.token = token;
     }
 

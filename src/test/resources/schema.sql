@@ -6,8 +6,9 @@ CREATE TABLE IF NOT EXISTS users
     first_name VARCHAR(50)  NOT NULL,
     last_name  VARCHAR(50)  NOT NULL,
     patronymic VARCHAR(50)  NOT NULL,
-    uuid       VARCHAR(36),
-    PRIMARY KEY (id)
+    uuid       UUID,
+    PRIMARY KEY (id),
+    UNIQUE (login)
 );
 
 CREATE TABLE IF NOT EXISTS cards
@@ -23,9 +24,9 @@ CREATE TABLE IF NOT EXISTS authorization_token
 (
     id              SERIAL,
     fk_user_id      INTEGER   NOT NULL,
-    token           varchar(36),
-    time_created    timestamp not null,
-    time_expiration timestamp not null,
+    token           UUID,
+    time_created    TIMESTAMP not null,
+    time_expiration TIMESTAMP not null,
     PRIMARY KEY (id),
     FOREIGN KEY (fk_user_id) REFERENCES users (id) ON DELETE CASCADE
 );
@@ -36,7 +37,7 @@ CREATE TABLE IF NOT EXISTS transfers
     amount          BIGINT    NOT NULL,
     fk_card_to_id   INTEGER   NOT NULL,
     fk_card_from_id INTEGER   NOT NULL,
-    token           VARCHAR(36),
+    token           UUID,
     executed        BOOLEAN   NOT NULL,
     time_created    TIMESTAMP NOT NULL,
     time_expiration TIMESTAMP NOT NULL,
