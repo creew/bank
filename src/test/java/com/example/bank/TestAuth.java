@@ -5,6 +5,8 @@ import com.example.bank.dto.request.UserRegisterDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -17,6 +19,8 @@ public class TestAuth extends AbstractTest{
     private static final String AUTH_PATH = "/auth";
 
     private static final String AUTH_PATH_SIGNUP = AUTH_PATH + "/signup";
+
+    private static final Logger logger = LoggerFactory.getLogger(TestAuth.class);
 
     @Test
     void testSignIn() {
@@ -31,7 +35,7 @@ public class TestAuth extends AbstractTest{
         ResponseEntity<JsonNode> responseEntity = restTemplate.postForEntity(getContextPath() +
                         AUTH_PATH + "/signin",
                 new CredentialsDTO("user", "password"), JsonNode.class);
-        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
     }
 
     @Nested
@@ -56,7 +60,8 @@ public class TestAuth extends AbstractTest{
                 bearer1 = Objects.requireNonNull(responseEntity.getBody()).get("bearer").asText();
                 ResponseEntity<JsonNode> responseEntity2 = restTemplate.postForEntity(getContextPath() +
                         AUTH_PATH_SIGNUP, userRegisterDTO, JsonNode.class);
-                assertEquals(HttpStatus.UNAUTHORIZED, responseEntity2.getStatusCode());
+                logger.info("body {}", responseEntity2.getBody().toString());
+                assertEquals(HttpStatus.CONFLICT, responseEntity2.getStatusCode());
             } finally {
                 if (bearer1 != null)
                     deleteUser(bearer1);

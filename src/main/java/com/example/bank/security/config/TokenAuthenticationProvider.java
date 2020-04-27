@@ -18,7 +18,8 @@ public class TokenAuthenticationProvider extends AbstractUserDetailsAuthenticati
     }
 
     @Override
-    protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) {
+    protected void additionalAuthenticationChecks(UserDetails userDetails,
+                                                  UsernamePasswordAuthenticationToken authentication) {
         // no need for additional check
     }
 

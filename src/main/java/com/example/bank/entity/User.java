@@ -2,7 +2,9 @@ package com.example.bank.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -33,6 +35,9 @@ public class User implements Serializable {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private AuthorizationToken authorizationToken;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Card> cards = new ArrayList<>();
 
     public Long getUserId() {
         return userId;
@@ -88,6 +93,10 @@ public class User implements Serializable {
 
     public void setAuthorizationToken(AuthorizationToken authorizationToken) {
         this.authorizationToken = authorizationToken;
+    }
+
+    public List<Card> getCards() {
+        return cards;
     }
 
     @Override

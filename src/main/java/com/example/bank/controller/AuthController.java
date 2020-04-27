@@ -40,7 +40,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public Map<String, String> registerUser(@RequestBody @Valid UserRegisterDTO userRegisterDto) {
         if (!userRegisterDto.getPassword().equals(userRegisterDto.getPasswordConfirm())){
-            throw new IllegalArgumentsPassed("Пароли не совпадают");
+            throw new IllegalArgumentsPassed("Password doesn't match");
         }
         if (usersService.findUserByLogin(userRegisterDto.getLogin()) != null) {
             throw new DuplicateEntryException("login " + userRegisterDto.getLogin() + " already exist");

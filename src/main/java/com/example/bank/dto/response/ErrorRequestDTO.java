@@ -1,5 +1,7 @@
 package com.example.bank.dto.response;
 
+import org.springframework.http.HttpStatus;
+
 import java.util.Date;
 
 public class ErrorRequestDTO {
@@ -54,14 +56,14 @@ public class ErrorRequestDTO {
         this.path = path;
     }
 
-    @Override
-    public String toString() {
-        return "ErrorRequestDTO{" +
-                "timestamp=" + timestamp +
-                ", status=" + status +
-                ", error='" + error + '\'' +
-                ", message='" + message + '\'' +
-                ", path='" + path + '\'' +
-                '}';
+    public ErrorRequestDTO(HttpStatus httpStatus, String message, String path) {
+        this.timestamp = new Date();
+        this.status = httpStatus.value();
+        this.error = httpStatus.name();
+        this.message = message;
+        this.path = path;
+    }
+
+    public ErrorRequestDTO() {
     }
 }
