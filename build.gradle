@@ -23,8 +23,6 @@ dependencies {
     compile group: 'org.hibernate.orm', name: 'hibernate-jpamodelgen', version: '6.0.0.Alpha5'
     annotationProcessor('org.hibernate:hibernate-jpamodelgen')
 
-
-
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
