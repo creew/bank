@@ -42,10 +42,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final TokenAuthenticationProvider provider;
 
     @Autowired
-    TokenAuthenticationFilter tokenAuthenticationFilter;
+    private TokenAuthenticationFilter tokenAuthenticationFilter;
 
     @Autowired
-    AuthenticationEntryPoint authenticationEntryPoint;
+    private AuthenticationEntryPoint authenticationEntryPoint;
 
     public SecurityConfig(TokenAuthenticationProvider provider) {
         super();
@@ -76,7 +76,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationProvider(provider)
                 .addFilterBefore(tokenAuthenticationFilter, AnonymousAuthenticationFilter.class)
                 .authorizeRequests()
-                .requestMatchers(PUBLIC_URLS).permitAll()
                 .requestMatchers(PROTECTED_URLS).authenticated()
         .and()
                 .csrf().disable()

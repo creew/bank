@@ -9,11 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class TransfersServiceImpl implements TransfersService {
 
-    private TransferRepository transferRepository;
+    private final TransferRepository transferRepository;
 
     public TransfersServiceImpl(TransferRepository transferRepository) {
         this.transferRepository = transferRepository;
@@ -29,7 +30,7 @@ public class TransfersServiceImpl implements TransfersService {
     @Override
     @Transactional(readOnly = true)
     public Optional<Transfer> findTransferByToken(String token) {
-        Transfer transfer = transferRepository.findTransferByToken(token);
+        Transfer transfer = transferRepository.findTransferById(UUID.fromString(token));
         if (transfer != null && !transfer.isExecuted() && !transfer.hasExpired()) {
             return Optional.of(transfer);
         }
@@ -42,5 +43,4 @@ public class TransfersServiceImpl implements TransfersService {
         transfer.setExecuted(true);
         transferRepository.saveAndFlush(transfer);
     }
-
 }

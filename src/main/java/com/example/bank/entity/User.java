@@ -2,22 +2,21 @@ package com.example.bank.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
-@Table(name= "users")
+@Table(name= "USERS")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 2765105000222936867L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "ID")
     private Long userId;
-
-    @Column(name = "UUID", length=36)
-    private String uuid;
 
     @Column(name = "LOGIN", nullable = false)
     private String login;
@@ -36,6 +35,9 @@ public class User implements Serializable {
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private AuthorizationToken authorizationToken;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Card> cards = new ArrayList<>();
 
     public Long getUserId() {
         return userId;
@@ -93,20 +95,8 @@ public class User implements Serializable {
         this.authorizationToken = authorizationToken;
     }
 
-    public User(UUID uuid) {
-        this.uuid = uuid.toString();
-    }
-
-    public User() {
-        this(UUID.randomUUID());
-    }
-
-    public UUID getUuid() {
-        return UUID.fromString(uuid);
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public List<Card> getCards() {
+        return cards;
     }
 
     @Override
@@ -115,9 +105,8 @@ public class User implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return userId.equals(user.userId) &&
-                uuid.equals(user.uuid) &&
                 login.equals(user.login) &&
-                password.equals(user.password) &&
+                Arrays.equals(password, user.password) &&
                 firstName.equals(user.firstName) &&
                 lastName.equals(user.lastName) &&
                 patronymic.equals(user.patronymic);
@@ -125,7 +114,7 @@ public class User implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, uuid, login, password, firstName, lastName, patronymic);
+        return Objects.hash(userId, login, password, firstName, lastName, patronymic);
     }
 
     public String getPrincipal() {

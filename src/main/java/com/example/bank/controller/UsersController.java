@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class Controller {
+public class UsersController {
 
     private final UsersService usersService;
 
-    public Controller(UsersService usersService) {
+    public UsersController(UsersService usersService) {
         this.usersService = usersService;
     }
 
     @DeleteMapping("/users")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@AuthenticationPrincipal UserDTO user) {
+    public void deleteUser(@AuthenticationPrincipal final UserDTO user) {
         usersService.deleteUserById(user.getId());
     }
 }

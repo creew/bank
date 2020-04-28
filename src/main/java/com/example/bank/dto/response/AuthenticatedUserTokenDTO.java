@@ -19,7 +19,7 @@ public class AuthenticatedUserTokenDTO implements Serializable {
 
     public static AuthenticatedUserTokenDTO fromAuthorizationToken(AuthorizationToken token) {
         AuthenticatedUserTokenDTO authenticatedUserTokenDTO = new AuthenticatedUserTokenDTO();
-        authenticatedUserTokenDTO.token = token.getToken();
+        authenticatedUserTokenDTO.token = token.getId().toString();
         return authenticatedUserTokenDTO;
     }
 

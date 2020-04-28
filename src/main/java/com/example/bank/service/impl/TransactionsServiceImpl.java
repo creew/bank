@@ -1,6 +1,6 @@
 package com.example.bank.service.impl;
 
-import com.example.bank.dao.TransactionsRepository;
+import com.example.bank.dao.TransactionRepository;
 import com.example.bank.dto.response.TransactionDTO;
 import com.example.bank.entity.Card;
 import com.example.bank.entity.Transaction;
@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 @Service
 public class TransactionsServiceImpl implements TransactionsService {
 
-    private final TransactionsRepository transactionsRepository;
+    private final TransactionRepository transactionRepository;
 
-    public TransactionsServiceImpl(TransactionsRepository transactionsRepository) {
-        this.transactionsRepository = transactionsRepository;
+    public TransactionsServiceImpl(TransactionRepository transactionRepository) {
+        this.transactionRepository = transactionRepository;
     }
 
     @Transactional
@@ -29,14 +29,23 @@ public class TransactionsServiceImpl implements TransactionsService {
         transaction.setCardTo(cardTo);
         transaction.setAmount(amount);
         transaction.setTimeExecuted(date);
-        transactionsRepository.saveAndFlush(transaction);
+        transactionRepository.saveAndFlush(transaction);
+    }
+
+    private Date getDateFromUnixTime(Long time) {
+        if (time != null) {
+            return new Date(time);
+        }
+        return null;
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<TransactionDTO> getTransactionsOfUser(Long userIdFrom, Long amountFrom, Long amountTo, Date dateFrom, Date dateTo) {
-        List<Transaction> transactions = transactionsRepository.fetchAllTransferByUser(
-                userIdFrom, amountFrom, amountTo, dateFrom, dateTo);
+    public List<TransactionDTO> getTransactionsOfUser(Long userId, Long cardIdTo, Long amountFrom,
+                                                      Long amountTo, Long dateFrom, Long dateTo) {
+        List<Transaction> transactions = transactionRepository.fetchAllTransferByUser(
+                userId, cardIdTo, amountFrom, amountTo,
+                getDateFromUnixTime(dateFrom), getDateFromUnixTime(dateTo));
         return transactions.stream()
                 .map(TransactionDTO::fromTransfer)
                 .collect(Collectors.toList());
@@ -44,11 +53,12 @@ public class TransactionsServiceImpl implements TransactionsService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<TransactionDTO> getTransactionsOfUserToUser(Long cardIdFrom, Long cardIdTo, Long amountFrom, Long amountTo, Date dateFrom, Date dateTo) {
-        List<Transaction> transactions = transactionsRepository.fetchAllTransferByUserToUser(
-                cardIdFrom, cardIdTo, amountFrom, amountTo, dateFrom, dateTo);
+    public List<TransactionDTO> getTransactionsOfCard(Long cardId, Long cardIdTo, Long amountFrom,
+                                                      Long amountTo, Long dateFrom, Long dateTo) {
+        List<Transaction> transactions = transactionRepository.fetchAllTransferByCard(
+                cardId, cardIdTo, amountFrom, amountTo,
+                getDateFromUnixTime(dateFrom), getDateFromUnixTime(dateTo));
         return transactions.stream()
                 .map(TransactionDTO::fromTransfer)
-                .collect(Collectors.toList());
-    }
+                .collect(Collectors.toList());    }
 }

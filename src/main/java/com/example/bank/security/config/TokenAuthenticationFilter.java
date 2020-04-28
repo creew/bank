@@ -1,5 +1,6 @@
 package com.example.bank.security.config;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,9 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
-import static java.util.Optional.ofNullable;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import java.util.Optional;
 
 public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -33,11 +32,9 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        String param = ofNullable(request.getHeader(AUTHORIZATION))
-                .orElse(request.getParameter("t"));
-        String tokenFull = ofNullable(param)
-                .map(this::removeBearer)
-                .map(String::trim)
+        String param = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String tokenFull = Optional.ofNullable(param)
+                .map(s -> removeBearer(s).trim())
                 .orElseThrow(() -> new BadCredentialsException("Missing Authentication Token"));
         Authentication auth = new UsernamePasswordAuthenticationToken("", tokenFull);
         return getAuthenticationManager().authenticate(auth);

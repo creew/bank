@@ -1,16 +1,11 @@
 package com.example.bank;
 
-import com.example.bank.dto.CardDTO;
-import com.example.bank.dto.request.CredentialsDTO;
-import com.example.bank.dto.request.UserRegisterDTO;
+import com.example.bank.dto.response.CardDTO;
 import com.example.bank.dto.response.ErrorRequestDTO;
 import com.example.bank.dto.response.VerifyTransferDTO;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,33 +14,35 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class BankApplicationTests extends AbstractTest{
+class CardsTests extends AbstractTest{
 
-    private Logger logger = LoggerFactory.getLogger(BankApplicationTests.class);
+    private static final Logger logger = LoggerFactory.getLogger(CardsTests.class);
 
-    @Test
-    void testSignIn() {
-        ResponseEntity<JsonNode> responseEntity = restTemplate.postForEntity(getContextPath() + "/auth/signin",
-                new CredentialsDTO(registeredUser.login, registeredUser.password), JsonNode.class);
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-    }
+    private static final String CARDS_PATH = "/cards";
 
     @Test
     void testGetAllCardsEmpty() {
-        ResponseEntity<String> responseEntity = executeExchange("/cards", registeredUser.bearer,
+        ResponseEntity<String> responseEntity = executeExchange(CARDS_PATH, registeredUser.bearer,
                 HttpMethod.GET);
-
         logger.debug(responseEntity.getBody());
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
     }
 
     @Test
+    void testGetAllCardsEmptyWrongBearer() {
+        ResponseEntity<String> responseEntity = executeExchange(CARDS_PATH, "efefsfd",
+                HttpMethod.GET);
+        logger.debug(responseEntity.getBody());
+        assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+    }
+
+    @Test
     void testGetAllCardsNotEmpty() {
         CardDTO card1 = sendCreateCardRequest(registeredUser.bearer);
-        CardDTO card2 = sendCreateCardRequest(registeredUser.bearer);
+        sendCreateCardRequest(registeredUser.bearer);
         String s = sendDeposit(card1.getCardId(), 1234, registeredUser.bearer, HttpStatus.OK);
         assertEquals(1234, parseJson(s, CardDTO.class).getAmount());
-        ResponseEntity<String> responseEntity = executeExchange("/cards", registeredUser.bearer,
+        ResponseEntity<String> responseEntity = executeExchange(CARDS_PATH, registeredUser.bearer,
                 HttpMethod.GET);
         CardDTO[] cards = parseJson(responseEntity.getBody(), CardDTO[].class);
         logger.debug(Arrays.toString(cards));
@@ -54,7 +51,7 @@ class BankApplicationTests extends AbstractTest{
 
     @Test
     void testCreateNewCard() {
-        ResponseEntity<String> responseEntity = executeExchange("/cards", registeredUser.bearer,
+        ResponseEntity<String> responseEntity = executeExchange(CARDS_PATH, registeredUser.bearer,
                 HttpMethod.PUT);
         logger.debug(responseEntity.getBody());
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
@@ -94,7 +91,7 @@ class BankApplicationTests extends AbstractTest{
             s = sendCompleteTransfer(verifyTransferDTO.getToken(), HttpStatus.BAD_REQUEST, registeredUser.bearer);
 
             ErrorRequestDTO errorRequestDTO = parseJson(s, ErrorRequestDTO.class);
-            logger.debug(errorRequestDTO.toString());
+            logger.info(errorRequestDTO.toString());
             assertEquals(1034, getCardBalance(cardFrom.getCardId(), registeredUser.bearer));
         }
     }
@@ -121,19 +118,6 @@ class BankApplicationTests extends AbstractTest{
             CardDTO returnedCard = parseJson(s, CardDTO.class);
             assertEquals(734, returnedCard.getAmount());
         }
-    }
-
-    @Nested
-    class WithoutBeforeAfterEach {
-
-        @Test
-        void createUserWithNullValues() {
-            UserRegisterDTO userRegisterDTO = new UserRegisterDTO("11", "22", "22", null, "22", "22");
-            ResponseEntity<String> responseEntity = restTemplate.postForEntity(getContextPath() + "/auth/signup",
-                    userRegisterDTO, String.class);
-            assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        }
-
     }
 }
 

@@ -2,6 +2,7 @@ package com.example.bank.controller;
 
 import com.example.bank.dto.request.CredentialsDTO;
 import com.example.bank.dto.request.UserRegisterDTO;
+import com.example.bank.exception.DuplicateEntryException;
 import com.example.bank.exception.IllegalArgumentsPassed;
 import com.example.bank.exception.WrongPasswordException;
 import com.example.bank.service.UsersService;
@@ -17,9 +18,9 @@ import java.util.Map;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private UsersService usersService;
+    private final UsersService usersService;
 
-    private UserAuthenticationService authenticationService;
+    private final UserAuthenticationService authenticationService;
 
     public AuthController(UsersService usersService,
                           UserAuthenticationService authenticationService) {
@@ -39,9 +40,11 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public Map<String, String> registerUser(@RequestBody @Valid UserRegisterDTO userRegisterDto) {
         if (!userRegisterDto.getPassword().equals(userRegisterDto.getPasswordConfirm())){
-            throw new IllegalArgumentsPassed("Пароли не совпадают");
+            throw new IllegalArgumentsPassed("Password doesn't match");
+        }
+        if (usersService.findUserByLogin(userRegisterDto.getLogin()) != null) {
+            throw new DuplicateEntryException("login " + userRegisterDto.getLogin() + " already exist");
         }
         return Collections.singletonMap("bearer", usersService.createUser(userRegisterDto).getToken());
     }
-
 }

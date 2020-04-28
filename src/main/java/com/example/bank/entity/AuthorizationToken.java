@@ -1,31 +1,34 @@
 package com.example.bank.entity;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
 @Entity
-@Table(name="authorization_token")
+@Table(name="AUTHORIZATION_TOKEN")
 public class AuthorizationToken implements Serializable {
 
     private static final Integer DEFAULT_TIME_TO_LIVE_IN_SECONDS = (60 * 60 * 24 * 30);
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "ID", updatable = false, nullable = false)
+    private UUID id;
 
-    @Column(name = "token", length=36)
-    private String token;
-
-    @Column(name = "time_created")
+    @Column(name = "TIME_CREATED")
     private Date timeCreated;
 
-    @Column(name = "time_expiration")
+    @Column(name = "TIME_EXPIRATION")
     private Date timeExpiration;
 
-    @JoinColumn(name = "fk_user_id")
+    @JoinColumn(name = "FK_USER_ID")
     @OneToOne(fetch = FetchType.LAZY)
     private User user;
 
@@ -36,7 +39,6 @@ public class AuthorizationToken implements Serializable {
     }
 
     public AuthorizationToken(User user, Integer timeToLiveInSeconds) {
-        this.token = UUID.randomUUID().toString();
         this.user = user;
         this.timeCreated = new Date();
         this.timeExpiration = new Date(System.currentTimeMillis() + (timeToLiveInSeconds * 1000L));
@@ -46,28 +48,16 @@ public class AuthorizationToken implements Serializable {
         return this.timeExpiration != null && this.timeExpiration.before(new Date());
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
     public Date getTimeCreated() {
         return timeCreated;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public void setTimeCreated(Date timeCreated) {
@@ -84,5 +74,19 @@ public class AuthorizationToken implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public String toString() {
+        return "AuthorizationToken{" +
+                "id=" + id +
+                ", timeCreated=" + timeCreated +
+                ", timeExpiration=" + timeExpiration +
+                ", user=" + user +
+                '}';
     }
 }

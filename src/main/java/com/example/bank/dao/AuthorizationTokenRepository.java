@@ -4,9 +4,11 @@ import com.example.bank.entity.AuthorizationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface AuthorizationTokenRepository extends JpaRepository<AuthorizationToken, Long> {
+import java.util.UUID;
 
-    AuthorizationToken findAuthorizationTokenByToken(String token);
+@Repository
+public interface AuthorizationTokenRepository extends JpaRepository<AuthorizationToken, UUID> {
+
+    AuthorizationToken findAuthorizationTokenById(UUID id);
 
 }

@@ -40,7 +40,7 @@ public class VerifyTransferDTO implements Serializable {
 
     public static VerifyTransferDTO fromTransfer(Transfer transfer) {
         VerifyTransferDTO verifyTransferDTO = new VerifyTransferDTO();
-        verifyTransferDTO.token = transfer.getToken();
+        verifyTransferDTO.token = transfer.getId().toString();
         verifyTransferDTO.amount = transfer.getAmount();
         verifyTransferDTO.principal = transfer.getCardTo().getUser().getPrincipal();
         return verifyTransferDTO;

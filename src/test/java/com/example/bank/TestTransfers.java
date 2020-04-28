@@ -1,6 +1,6 @@
 package com.example.bank;
 
-import com.example.bank.dto.CardDTO;
+import com.example.bank.dto.response.CardDTO;
 import com.example.bank.dto.response.ErrorRequestDTO;
 import com.example.bank.dto.response.VerifyTransferDTO;
 import org.junit.jupiter.api.Test;
@@ -27,8 +27,8 @@ public class TestTransfers extends AbstractTest{
                 100, HttpStatus.OK, registeredUser.bearer);
         VerifyTransferDTO verifyTransferDTO = parseJson(s, VerifyTransferDTO.class);
 
-        logger.info("//////////-------" + verifyTransferDTO.getPrincipal() + " sum: "
-                + verifyTransferDTO.getAmount() +  "-------////////////");
+        logger.info("//////////-------{} sum: {} -------////////////", verifyTransferDTO.getPrincipal(),
+                verifyTransferDTO.getAmount());
 
         sendCompleteTransfer(verifyTransferDTO.getToken(), HttpStatus.OK, registeredUser.bearer);
         assertEquals(1134, getCardBalance(cardFrom.getCardId(), registeredUser.bearer));

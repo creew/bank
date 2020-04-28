@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthorizationServiceImpl implements AuthorizationService {
@@ -19,14 +20,15 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
-    public void deleteAuthorizationToken(Long id) {
+    public void deleteAuthorizationToken(UUID id) {
         authorizationTokenRepository.deleteById(id);
     }
 
     @Override
     @Transactional
-    public Optional<UserDTO> getUserFromAuthorizationToken(String token) {
-        AuthorizationToken authorizationToken = authorizationTokenRepository.findAuthorizationTokenByToken(token);
+    public Optional<UserDTO> getUserFromAuthorizationToken(UUID token) {
+        AuthorizationToken authorizationToken = authorizationTokenRepository
+                .findAuthorizationTokenById(token);
         if (authorizationToken != null && !authorizationToken.hasExpired()) {
             return Optional.of(UserDTO.fromUser(authorizationToken.getUser()));
         }
