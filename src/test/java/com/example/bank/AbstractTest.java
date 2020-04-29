@@ -96,7 +96,7 @@ public abstract class AbstractTest {
                 "12", "12", "12", password));
     }
 
-    protected HttpHeaders createHeaders(String bearer){
+    protected HttpHeaders createHeaders(String bearer) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setBearerAuth(bearer);
         httpHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -104,8 +104,7 @@ public abstract class AbstractTest {
         return httpHeaders;
     }
 
-    protected  <T> HttpEntity<T> createHttpEntity(T body, String bearer)
-    {
+    protected <T> HttpEntity<T> createHttpEntity(T body, String bearer) {
         HttpHeaders httpHeaders = createHeaders(bearer);
         return new HttpEntity<>(body, httpHeaders);
     }
@@ -127,7 +126,7 @@ public abstract class AbstractTest {
         return executeExchange("/users", bearer, HttpMethod.DELETE);
     }
 
-    protected  <T> T parseJson(String json, Class<T> clazz) {
+    protected <T> T parseJson(String json, Class<T> clazz) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             return objectMapper.readValue(json, clazz);
@@ -182,6 +181,12 @@ public abstract class AbstractTest {
         VerifyTransferDTO verifyTransferDTO = parseJson(s, VerifyTransferDTO.class);
         s = sendCompleteTransfer(verifyTransferDTO.getToken(), HttpStatus.OK, bearer);
         return parseJson(s, CardDTO.class);
+    }
+
+    protected ResponseEntity<String> sendCompleteTransferNoValidate(String token, String bearer) {
+        CompleteTransferDTO completeTransferDTO = new CompleteTransferDTO(token);
+        return executeExchangeWithBody("/transfer",
+                bearer, HttpMethod.PUT, completeTransferDTO);
     }
 
     public static String randomPrinciple() {

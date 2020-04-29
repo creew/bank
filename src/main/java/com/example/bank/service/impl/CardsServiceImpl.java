@@ -12,7 +12,10 @@ import com.example.bank.exception.IllegalCardIdPassed;
 import com.example.bank.service.CardsService;
 import com.example.bank.service.TransactionsService;
 import com.example.bank.service.TransfersService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -27,6 +30,8 @@ public class CardsServiceImpl implements CardsService {
     private final TransfersService transfersService;
 
     private final TransactionsService transactionsService;
+
+    private static final Logger logger = LoggerFactory.getLogger(CardsServiceImpl.class);
 
     public CardsServiceImpl(CardRepository cardRepository,
                             TransfersService transfersService, TransactionsService transactionsService) {
@@ -66,7 +71,7 @@ public class CardsServiceImpl implements CardsService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public CardDTO completeTransfer(long userFromId, CompleteTransferDTO completeTransferDto) {
         String token = completeTransferDto.getToken();
         Transfer transfer = transfersService.findTransferByToken(token).orElseThrow(
@@ -76,11 +81,14 @@ public class CardsServiceImpl implements CardsService {
         if (!cardFrom.getUser().getUserId().equals(userFromId))
             throw new IllegalArgumentsPassed("Card is not your");
         Long amount = transfer.getAmount();
+        logger.info("Complete transfer: from: {}, to: {}, amount: {}", CardDTO.fromCard(cardFrom),
+                CardDTO.fromCard(cardTo), amount);
         cardFrom.setAmount(cardFrom.getAmount() - amount);
         cardTo.setAmount(cardTo.getAmount() + amount);
         Card updatedFrom = cardRepository.save(cardFrom);
         if (updatedFrom.getAmount() < 0)
             throw new IllegalArgumentsPassed("Not enough money");
+        logger.info("Result complete transfer: {}", CardDTO.fromCard(updatedFrom));
         cardRepository.saveAndFlush(cardTo);
         transfersService.setTransferComplete(transfer);
         transactionsService.saveTransaction(cardFrom, cardTo, amount, new Date());
